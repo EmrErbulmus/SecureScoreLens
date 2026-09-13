@@ -11,6 +11,8 @@ Tenant'ınıza salt-okunur bağlanır, Secure Score puanını ve kapsamdaki **t�
 işlemlerini okur, sonucu **tek dosyalık, çevrimdışı çalışan, Türkçe** bir HTML rapora
 dönüştürür. Tenant üzerinde hiçbir değişiklik yapmaz, hiçbir kimlik bilgisi saklamaz.
 
+<img width="1280" height="640" alt="securescorelens-social-preview" src="https://github.com/user-attachments/assets/85dfd1f1-7465-409b-96a7-68d38910604e" />
+
 ---
 
 ## Bu araç ne işe yarar?
