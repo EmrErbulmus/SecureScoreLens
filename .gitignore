@@ -1,0 +1,29 @@
+# Üretilen raporlar - asla depoya girmemeli (tenant verisi içerir)
+Raporlar/
+reports/
+*.html
+!docs/**/*.html
+secure-score-*.csv
+secure-score-*.json
+securescore-raw-*.json
+portal-comparison-*.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# İşletim sistemi
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editör
+.vscode/
+.idea/
+*.swp
+
+# Paketleme çıktısı
+*.zip
+!docs/ornek/*.zip
