@@ -1,6 +1,6 @@
 # SecureScoreLens
 
-**Microsoft 365 Secure Score'u, müşteriye sunulabilir bir güvenlik değerlendirme raporuna dönüştürür.**
+**Microsoft 365 Secure Score verilerini analiz ederek yönetici seviyesinde, müşteriye sunulabilir profesyonel güvenlik değerlendirme raporları oluşturur.**
 
 [![PowerShell 5.1+](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE)](https://learn.microsoft.com/powershell/)
 [![Python 3.8+](https://img.shields.io/badge/Python-3.8%2B-3776AB)](https://www.python.org/)
