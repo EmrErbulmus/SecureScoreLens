@@ -153,6 +153,9 @@ Açık her madde için ayrı bir **bulgu kartı** — danışmanlık raporu biç
 Bölümün başında yönetici özeti, raporun amacı ve renk kodlu risk duruşu tablosu yer alır.
 **PDF olarak indir** düğmesi yalnızca bu bölümü basar.
 
+<img width="1374" height="1223" alt="SecureScoreLens1" src="https://github.com/user-attachments/assets/a4912288-0b2d-482c-877a-53b04a83555d" />
+
+
 ---
 
 ## Kimler için, ne katkı sağlar?
