@@ -1,0 +1,819 @@
+{
+  "schema": 1,
+  "controls": {
+    "scid_63": {
+      "title": "Disable 'Configure Offer Remote Assistance'",
+      "options": [
+        {
+          "label": "Group Policy — Offer Remote Assistance",
+          "steps": [
+            "Hedef cihaz GPO'sunda Computer Configuration\\Policies\\Administrative Templates\\System\\Remote Assistance yolunu açın.",
+            "Configure Offer Remote Assistance ayarını Disabled yapın; destek ekibinin Offer Remote Assistance bağımlılığını değerlendirip önce pilot cihazlara dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-remoteassistance"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows cihaz kapsamı. Offer Remote Assistance, Solicited Remote Assistance ile aynı ilke değildir; yalnızca bu seçenek kurumsal destek tarafından başlatılan bağlantıları kapatır.",
+          "verification": "gpresult raporunda Configure Offer Remote Assistance ayarının Disabled olduğunu ve yardım teklifinin kabul edilemediğini pilot cihazda kontrol edin."
+        },
+        {
+          "label": "Microsoft Intune — Settings catalog",
+          "steps": [
+            "Devices > Manage devices > Configuration > Create > New policy içinde Windows 10 and later ve Settings catalog seçin.",
+            "Add settings içinde Configure Offer Remote Assistance arayın; RemoteAssistance/UnsolicitedRemoteAssistance karşılığını ve cihaz kapsamını Learn more bağlantısıyla kontrol edip Disabled yapın.",
+            "Assignments ile pilot gruba atayın ve Review + create ile kaydedin; ayar görünmüyorsa başka bir Remote Assistance ayarıyla değiştirmeyin."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/intune/intune-service/configuration/settings-catalog",
+            "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-remoteassistance"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Intune yönetiminde Windows 10 version 1703 ve sonrası, ilgili CSP'yi destekleyen Pro, Enterprise, Education veya IoT Enterprise cihazları. Tenant arayüzü canlı olarak doğrulanmamıştır.",
+          "verification": "Intune per-setting status içinde Success durumunu ve cihazın etkin ilke sonucunu karşılaştırın; Error veya Conflict kayıtlarını çözün.",
+          "displayApplicability": "Intune yönetiminde Windows 10 version 1703 ve sonrası; ilgili CSP'yi destekleyen Pro, Enterprise, Education veya IoT Enterprise cihazları. Ayarın desteğini ve Settings catalog eşleşmesini hedef cihazlarda kontrol edin."
+        }
+      ],
+      "notes": "İstekle yardım ve yardım teklifi ayrı ayrı yönetilir; scid_87 bu kontrolün yerine geçmez.",
+      "changeCaveat": "İstekle yardım ve yardım teklifi ayrı ayrı yönetilir; biri diğerinin yerine geçmez."
+    },
+    "scid_67": {
+      "title": "Disable 'Autoplay for non-volume devices'",
+      "options": [
+        {
+          "label": "Group Policy — non-volume AutoPlay",
+          "steps": [
+            "Hedef GPO'da Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\AutoPlay Policies yolunu açın.",
+            "Disallow Autoplay for non-volume devices ayarını Enabled yapın ve pilot cihazlara dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-autoplay"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "MTP kamera ve telefon gibi non-volume cihazlarını kapsar. İlke Enabled olduğunda AutoPlay kapanır; isimdeki olumsuz ifadeyi ters çevirmeyin.",
+          "verification": "gpresult ile Disallow Autoplay for non-volume devices=Enabled sonucunu doğrulayın; test MTP cihazında AutoPlay davranışını kontrol edin."
+        }
+      ],
+      "notes": "All drives AutoPlay ayarı ayrı scid_69 kontrolüdür.",
+      "changeCaveat": "AutoRun ve tüm sürücüler için AutoPlay ayrı ayarlardır."
+    },
+    "scid_69": {
+      "title": "Disable 'Autoplay' for all drives",
+      "options": [
+        {
+          "label": "Group Policy — all drives AutoPlay",
+          "steps": [
+            "Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\AutoPlay Policies yolunu açın.",
+            "Turn off Autoplay ayarını Enabled yapın; Options altında All drives seçin. Yalnızca CD-ROM and removable media drives seçmek önerinin tüm sürücüler kapsamını karşılamaz.",
+            "İlkeyi pilot cihazlarda doğruladıktan sonra hedef cihaz grubuna dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-autoplay"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows; Computer Configuration ayarı User Configuration ile çakıştığında önceliklidir. Taşınabilir medya iş akışı değişir.",
+          "verification": "gpresult ile Turn off Autoplay=Enabled ve All drives seçimini doğrulayın; test medyası takıldığında AutoPlay başlamadığını kontrol edin."
+        }
+      ],
+      "notes": "AutoPlay ve AutoRun ilişkili fakat ayrı ayarlardır.",
+      "changeCaveat": "AutoPlay ve AutoRun ilişkili fakat ayrı ayarlardır."
+    },
+    "scid_70": {
+      "title": "Set default behavior for 'AutoRun' to 'Enabled: Do not execute any autorun commands'",
+      "options": [
+        {
+          "label": "Group Policy — AutoRun commands",
+          "steps": [
+            "Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\AutoPlay Policies yolunu açın.",
+            "Set the default behavior for AutoRun ayarını Enabled yapın; Options altında Do not execute any autorun commands seçin.",
+            "Pilot medyayla iş akışını test edip hedef GPO'yu dağıtın; Automatically execute the autorun commands alternatifini seçmeyin."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-autoplay"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows. İlkeyi yalnızca Enabled yapmak yeterli değildir; alt seçenek güvenlik sonucunu belirler.",
+          "verification": "gpresult raporunda etkin ilkenin alt seçeneğini okuyun; güvenli test medyasındaki AutoRun komutunun çalışmadığını doğrulayın."
+        }
+      ],
+      "notes": "Bu kontrol için belgede açıkça verilmeyen registry değeri türetilmemiştir."
+    },
+    "scid_2000": {
+      "title": "Turn on Microsoft Defender for Endpoint sensor",
+      "options": [
+        {
+          "label": "Windows — sensor durumu ve desteklenen onboarding",
+          "steps": [
+            "Defender portalında etkilenen cihazın aktif, yeniden kurulmuş veya offboard edilmiş olup olmadığını kontrol edin; eski cihaz kaydını yeni kuruluma ait kayıttan ayırın.",
+            "Onboard edilmemiş Windows client için System > Settings > Endpoints > Device management > Onboarding yolunda doğru OS, Connectivity type ve Deployment method seçin; tenant için üretilen onboarding paketini alın.",
+            "Dağıtım yöntemine ait Microsoft yönergesiyle pilot cihazı onboard edin. Local script yöntemi en fazla 10 cihaz için uygundur; geniş dağıtımda Intune veya Group Policy gibi belgelenmiş yöntemi seçin.",
+            "Cihaz zaten onboard edilmişse yalnızca yeniden onboarding yapmayın; MDE Client Analyzer'ın Microsoft imzalı paketini hedef cihazda yetkili yönetici olarak çalıştırıp MDEClientAnalyzer.htm içindeki sensor ve onboarding bulgularına göre ilerleyin."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/onboard-windows-client",
+            "https://learn.microsoft.com/en-us/defender-endpoint/fix-unhealthy-sensors",
+            "https://learn.microsoft.com/en-us/defender-endpoint/run-analyzer-windows"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows client için koşullu onboarding ve teşhis seçeneğidir; Windows Server, macOS ve Linux için aynı paket kullanılamaz. Geçerli lisans, yetki ve ağ erişimi gerekir. Sensor'ü her cihazda tek bir service komutuyla açma garantisi verilmez.",
+          "verification": "Yeni/etkin cihaz kaydında güncel Last seen ve sağlıklı sensor durumunu kontrol edin; Analyzer raporundaki onboarding/sensor hatalarının giderildiğini doğrulayın. Secure Score yenilenmesi ayrıca izlenir."
+        }
+      ],
+      "notes": "2026-10-01_13h34_37.png yalnızca genel yönlendirmeyi gösterir; ayrıntılı portal Remediation options ekranı sağlanmamıştır. Bu seçenek Microsoft Learn'e dayalı koşullu teşhis/onboarding yoludur, portal seçeneklerinin birebir aktarımı değildir."
+    },
+    "scid_20000": {
+      "title": "Onboard devices to Microsoft Defender for Endpoint",
+      "options": [
+        {
+          "label": "Microsoft Defender portal — Windows client onboarding",
+          "steps": [
+            "Defender for Endpoint gereksinimlerini ve hedef Windows client lisansını kontrol edin; mevcut onboarding/offboarding yönetim planını gözden geçirin.",
+            "System > Settings > Endpoints > Device management > Onboarding içinde doğru OS, Connectivity type ve Deployment method seçin.",
+            "Onboarding paketini indirin; seçilen Intune, Group Policy veya diğer desteklenen dağıtım yönteminin yönergesini uygulayın. Local script seçeneğini en fazla 10 cihazlık pilotla sınırlayın.",
+            "Paketi yeniden paketlemeyin; yalnızca doğru tenant için üretilmiş paketi kontrollü cihaz grubuna dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/onboard-windows-client",
+            "https://learn.microsoft.com/en-us/defender-endpoint/run-analyzer-windows"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Bu seçenek Windows client içindir; server ve diğer işletim sistemlerinin onboarding yolları ayrıdır. Streamlined connectivity seçimi kendi önkoşullarını karşılamalıdır.",
+          "verification": "Cihazın doğru tenant içinde güncel veri gönderdiğini kontrol edin; onboarding başarısızsa MDEClientAnalyzer.htm bulgularını inceleyin."
+        }
+      ],
+      "notes": "Tenant'a özel paket veya token bu katalogda saklanmaz."
+    },
+    "scid_2001": {
+      "title": "Fix Microsoft Defender for Endpoint sensor data collection",
+      "options": [
+        {
+          "label": "Windows — No sensor data teşhisi",
+          "steps": [
+            "Etkilenen cihazın sensor health durumunun No sensor data olduğunu doğrulayın; Impaired communications ile aynı arıza kabul etmeyin.",
+            "Cihazın Internet erişimini ve WinHTTP üzerinden Defender for Endpoint service URL'lerine ulaşabildiğini kontrol edin; proxy keşfi ve izinlerini kurumun ağ politikasıyla karşılaştırın.",
+            "Windows diagnostic data service için başlangıcın Automatic ve servisin Running olduğunu kontrol edin; kapalıysa kurumun servis yönetimiyle düzeltin.",
+            "Microsoft Defender Antivirus'ün ilkeyle kapatılmadığını kontrol edin. Üçüncü taraf antivirus kullanılıyorsa gerekli ELAM driver desteğini doğrulayın; üçüncü taraf ürününü koşulsuz kaldırmayın.",
+            "Microsoft imzalı MDE Client Analyzer paketini hedef Windows cihazında yetkili yönetici olarak çalıştırın; MDEClientAnalyzer.htm, sensor ve diagnostic data bulgularını inceleyin. Düzeltmeden sonra sorun sürerse Microsoft destek kaydı açın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/fix-unhealthy-sensors",
+            "https://learn.microsoft.com/en-us/defender-endpoint/run-analyzer-windows"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows sensor data collection için teşhis odaklı seçenek. Ağ/servis/ELAM bulgusu belirlenmeden genel registry sıfırlaması uygulanmaz. Analyzer çıktıları hassas sistem bilgileri içerebilir; destekle paylaşımı kurum politikasına göre yapın.",
+          "verification": "Diagnostic data service durumunu, Analyzer bağlantı/sensor sonuçlarını ve Defender portalındaki güncel sensor health/Last seen değerlerini karşılaştırın; No sensor data durumunun kalktığını kontrol edin."
+        }
+      ],
+      "notes": "2026-10-01_13h34_52.png başlığı ve eksik How-to metnini doğrular; burada portalın canlı seçenekleri değil belgelenmiş teşhis yolu sunulur."
+    },
+    "scid_2002": {
+      "title": "Fix Microsoft Defender for Endpoint impaired communications",
+      "options": [
+        {
+          "label": "Windows — WinHTTP ve proxy iletişimi",
+          "steps": [
+            "Etkilenen cihazda Impaired communications durumunu doğrulayın; Internet bağlantısını kontrol edin.",
+            "WinHTTP'nun kurum proxy'sini bulabildiğini ve Defender for Endpoint service URL'lerine erişebildiğini kontrol edin; proxy'nin gerekli trafiği izinli tuttuğunu doğrulayın.",
+            "MDE Client Analyzer'ın Microsoft imzalı paketini hedef Windows cihazında yetkili yöneticiyle çalıştırın; MDEClientAnalyzer.htm bağlantı testlerinden başarısız olan uçları belirleyin.",
+            "Yalnızca bulguyla doğrulanan proxy/ağ yapılandırmasını sorumlu ekiple düzeltin; sorun devam ederse Microsoft destek kaydı açın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/fix-unhealthy-sensors",
+            "https://learn.microsoft.com/en-us/defender-endpoint/run-analyzer-windows"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows iletişim teşhisi; tüm firewall veya proxy güvenlik kontrollerini kapatmayı gerektirmez. Analyzer sonuçları ortama ve OS'ye göre değişir.",
+          "verification": "Analyzer bağlantı testlerini düzeltme sonrası yeniden değerlendirin; cihazın güncel veri gönderdiğini ve Impaired communications durumunun kalktığını portalda doğrulayın."
+        }
+      ],
+      "notes": "No sensor data için ayrı scid_2001 seçeneği vardır."
+    },
+    "scid_4001": {
+      "title": "Remove share write permission set to ‘Everyone’",
+      "options": [
+        {
+          "label": "Windows SMB — tek paylaşımın ACL düzeltmesi",
+          "steps": [
+            "Etkilenen sunucu ve paylaşım adını belirleyin; Get-SmbShareAccess -Name '<paylaşım adı>' ile yalnızca bu paylaşımın mevcut ACL'sini okuyup kaydedin.",
+            "Everyone girdisinin sistem dilindeki adını doğru tanımlayın. Yazma sağlayan Allow Change veya Allow Full girdisini; uygulamaların hangi kimliklerle yazdığını ve NTFS izinlerini inceleyin.",
+            "Everyone kaldırılmadan önce gerekli yazma erişimini onaylı, dar kapsamlı kullanıcı veya gruba Grant-SmbShareAccess ile uygun Change ya da gerekiyorsa Full düzeyinde verin; izin gereksinimini pilot erişim testiyle doğrulayın.",
+            "Yalnızca bu paylaşım için Revoke-SmbShareAccess -Name '<paylaşım adı>' -AccountName '<Everyone girdisinin gerçek adı>' -WhatIf ile planlanan kaldırmayı inceleyin. Bu işlem Everyone için yalnızca write bitini değil tüm Allow ACE'lerini kaldırır.",
+            "Değişiklik onayından sonra aynı hedefte Revoke-SmbShareAccess işlemini onay istemini koruyarak uygulayın. Everyone için read erişimi iş gereği korunacaksa ayrıca Grant-SmbShareAccess ile yalnızca Read verin; toplu wildcard, tüm paylaşımları dolaşan betik veya Deny Everyone kullanmayın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/powershell/module/smbshare/get-smbshareaccess?view=windowsserver2025-ps",
+            "https://learn.microsoft.com/en-us/powershell/module/smbshare/revoke-smbshareaccess?view=windowsserver2025-ps",
+            "https://learn.microsoft.com/en-us/powershell/module/smbshare/grant-smbshareaccess?view=windowsserver2025-ps"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "SmbShare modülü bulunan Windows SMB paylaşımı; yetkili yönetici ve doğrulanmış paylaşım kimliği gerekir. Cluster/ScopeName kullanılıyorsa doğru scope seçilmelidir. Share ACL ile NTFS ACL farklıdır; Everyone'a Deny eklemek gerekli grupları da engelleyebilir. Yer tutucuları gerçek hedefler doğrulanmadan kullanmayın.",
+          "verification": "Get-SmbShareAccess sonucunda Everyone için Allow Change/Full kalmadığını kontrol edin. Yetkili grubun yazabildiğini, diğer test kullanıcısının yazamadığını ve korunması gereken read erişiminin çalıştığını ayrı ayrı test edin; NTFS etkin izinlerini de inceleyin."
+        }
+      ],
+      "notes": "2026-10-01_13h41_44.png exact title eşleşmesini sağlar; portalın ayrıntılı seçenekleri gösterilmemiştir. Bu içerik Microsoft SmbShare cmdlet belgelerine dayalı güvenli, tek hedefli ACL yoludur. Revoke tüm Allow ACE'lerini kaldırdığı için veri erişimi kesintisi riski açıkça belirtilmiştir.",
+      "changeCaveat": "Revoke-SmbShareAccess hedef principal için tüm Allow ACE'lerini kaldırır; veri erişimi kesilebilir."
+    },
+    "scid_53": {
+      "title": "Disable SMBv1 client driver",
+      "options": [
+        {
+          "label": "Windows Features — SMBv1 bileşenini kaldırma",
+          "steps": [
+            "Önce eski NAS, yazıcı, uygulama ve domain erişimlerinin SMBv1 bağımlılığını değerlendirin; gerekli sistemleri SMBv2/SMBv3 destekleyen sürümlere taşıyın.",
+            "Windows client üzerinde Control Panel > Programs and Features > Turn Windows features on or off açın; SMB 1.0/CIFS File Sharing Support seçimini kaldırın.",
+            "Değişikliği onaylı bakım penceresinde uygulayın ve istenen restart işlemini planlayın. Bu seçenek SMBv1 client ile server bileşenlerini birlikte etkileyebilir; SMBv2/SMBv3'ü kapatmayın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows 10/11 client için belgelenmiş bileşen kaldırma yöntemi. Windows Server için Features yöntemi farklıdır. Bu seçenek salt client registry değişikliği değildir; desteklenmeyen legacy OS'ye uygulanmaz.",
+          "verification": "Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol ile bileşenin Disabled olduğunu okuyun; restart sonrası gerekli SMBv2/SMBv3 paylaşımlarına erişimi test edin."
+        }
+      ],
+      "notes": "Driver bağımlılık listesini tüm OS'lerde koşulsuz değiştiren registry betiği üretilmemiştir."
+    },
+    "scid_54": {
+      "title": "Disable SMBv1 server",
+      "options": [
+        {
+          "label": "Windows PowerShell — SMB server bileşeni",
+          "steps": [
+            "Hedef SMB server üzerinde eski istemci ve uygulamaların SMBv1 bağımlılığını değerlendirin; mevcut yapılandırmayı kaydedin.",
+            "Yetkili PowerShell oturumunda Get-SmbServerConfiguration | Select EnableSMB1Protocol ile mevcut server durumunu okuyun.",
+            "Onaylı hedefte Set-SmbServerConfiguration -EnableSMB1Protocol $false uygulayın; SMBv2/SMBv3 için EnableSMB2Protocol değerini kapatmayın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Set-SmbServerConfiguration bulunan desteklenen Windows sürümlerinde server bileşeni; client driver ayrı kontroldür. Bu cmdlet için restart gerekmez; özellik kaldırma veya registry alternatifinde restart gereksinimi farklı olabilir.",
+          "verification": "Get-SmbServerConfiguration sonucunda EnableSMB1Protocol=False olduğunu okuyun; gerekli paylaşımların SMBv2/SMBv3 ile çalıştığını test edin."
+        }
+      ],
+      "notes": "SMB signing veya SMBv2/SMBv3 güvenliği düşürülmeden legacy bağımlılıklar giderilmelidir.",
+      "changeCaveat": "SMB signing veya SMBv2/SMBv3 güvenliği düşürülmeden legacy bağımlılıklar giderilmelidir."
+    },
+    "scid_96": {
+      "title": "Enable 'Network Protection'",
+      "options": [
+        {
+          "label": "Microsoft Intune — Antivirus policy",
+          "steps": [
+            "Endpoint security > Antivirus > Create policy içinde Platform=Windows ve Profile=Microsoft Defender Antivirus seçin veya mevcut ilgili profili düzenleyin.",
+            "Configuration settings altında Enable network protection değerini önce pilotta Enabled (audit mode) yapın; engellenecek uygulamaların etkisini inceleyin.",
+            "Etki incelemesi ve dar kapsamlı istisna onayından sonra Enabled (block mode) seçin; hedef gruplara kontrollü dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/enable-network-protection"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows 10 version 1709 ve sonrası/Windows 11 Pro veya Enterprise; Defender Antivirus Active mode, real-time protection, behavior monitoring ve cloud-delivered protection gerekir. Server'larda ayrıca AllowNetworkProtectionOnWinServer, downlevel sunucularda AllowNetworkProtectionDownLevel önkoşulları vardır; bu client akışı tek başına server önkoşullarını tamamlamaz.",
+          "verification": "Intune profil durumunu ve Get-MpPreference | Select EnableNetworkProtection sonucunu kontrol edin; Block için 1, Audit için 2 beklenir. Audit güvenlik engellemesi değildir."
+        },
+        {
+          "label": "Group Policy — Network protection",
+          "steps": [
+            "Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Microsoft Defender Antivirus\\Microsoft Defender Exploit Guard\\Network protection yolunu açın.",
+            "Prevent users and apps from accessing dangerous websites ayarını Enabled yapın; Options içinde önce Audit Mode, etki incelemesinden sonra Block seçin.",
+            "Pilot cihazlarla başlayıp hedef GPO'yu kontrollü dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/enable-network-protection"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Desteklenen Windows ve Defender Antivirus Active mode önkoşulları geçerlidir. Eski ADMX'de Windows Defender Antivirus adı görülebilir. Server opt-in ve platform sürümü gereksinimleri ayrıca uygulanır.",
+          "verification": "gpresult ile ilkeyi ve alt seçeneği; Get-MpPreference ile EnableNetworkProtection=1 sonucunu kontrol edin. Server cihazlarda gerekli opt-in değerlerini de doğrulayın."
+        }
+      ],
+      "notes": "Bu kontrol için Audit yalnızca pilot aşamasıdır; Block hedefiyle aynı sonuç olarak raporlanmaz.",
+      "changeCaveat": "Audit yalnızca pilot aşamasıdır; Block hedefiyle aynı sonuç olarak değerlendirilmez."
+    },
+    "scid_2004": {
+      "title": "Enable EDR in block mode",
+      "options": [
+        {
+          "label": "Microsoft Defender portal — tenant-wide EDR",
+          "steps": [
+            "Defender for Endpoint Plan 2, onboarding, çalışan Defender Antivirus Active/Passive mode, cloud-delivered protection ve güncel platform/engine önkoşullarını doğrulayın.",
+            "Microsoft Defender portalında Settings > Endpoints > General > Advanced features yolunu açın.",
+            "Enable EDR in block mode seçeneğini açın; bu yolun tenant-wide etkisini değişiklik onayına dahil edin."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/edr-in-block-mode"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Plan 2 ve uygun yönetim yetkisi gerekir; esas olarak üçüncü taraf antivirus nedeniyle Defender Antivirus Passive mode çalışan cihazlara ek koruma sağlar. ASR ve real-time protection'ın yerine geçmez.",
+          "verification": "Advanced features içinde ayarı kontrol edin; cihazlarda onboarding, cloud protection ve Get-MpComputerStatus ile platform/engine önkoşullarını doğrulayın. Gerçek EDR düzeltmeleri Action center içinde Blocked/Prevented ve tamamlanan eylemlerle izlenebilir; üretimde zararlı dosya çalıştırarak test etmeyin."
+        },
+        {
+          "label": "Group Policy — EDR in block mode",
+          "steps": [
+            "GPO'da Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Microsoft Defender Antivirus\\Features yolunu açın.",
+            "Enable EDR in block mode ayarını Enabled yapın; uygun Windows/ADMX desteği ve EDR önkoşulları bulunan pilot cihazlara dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/edr-in-block-mode"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Plan 2, onboarding, cloud protection ve desteklenen Defender platform/engine gerekir. Windows Server 2012 R2/2016 için modern unified solution gerekir; eski ADMX'de ayar bulunmayabilir.",
+          "verification": "gpresult ile etkin ilkeyi doğrulayın; cihazdaki Defender çalışma modu, platform, engine ve cloud protection durumunu ayrıca kontrol edin."
+        }
+      ],
+      "notes": "Portal ayarı tenant-wide'dır; bunu pilot gruba özel bir portal anahtarı gibi sunmayın.",
+      "changeCaveat": "Portal ayarı tenant-wide'dır; pilot gruba özel bir portal anahtarı değildir."
+    },
+    "scid_2016": {
+      "title": "Enable cloud-delivered protection",
+      "options": [
+        {
+          "label": "Microsoft Intune — cloud protection",
+          "steps": [
+            "Endpoint security > Antivirus içinde Windows platformunda Microsoft Defender Antivirus profilini oluşturun veya düzenleyin.",
+            "Allow cloud protection değerini Allowed. Turns on Cloud Protection yapın.",
+            "Submit samples consent için kurum veri paylaşımı politikasına göre Send safe samples automatically veya onaylı diğer seçeneği değerlendirin; tüm örnekleri göndermeyi otomatik varsaymayın.",
+            "Pilotta cloud service bağlantısını ve uygulama etkisini doğrulayıp Assignments ile hedef gruba dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/enable-cloud-protection-microsoft-defender-antivirus"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows Defender Antivirus ve cloud service ağ erişimi gerekir. Sample submission ile cloud protection ayrı ayarlardır; veri paylaşımı değerlendirmesi gerekir. Tamper protection tarafından korunan ayarları desteklenen yönetim aracından güncelleyin.",
+          "verification": "Intune dağıtım sonucunu ve Get-MpPreference | Select MAPSReporting, SubmitSamplesConsent sonucunu okuyun; Advanced cloud protection için MAPSReporting=2 beklenir. Seçilen sample submission sonucu ayrıca değerlendirilir."
+        },
+        {
+          "label": "Group Policy — Join Microsoft MAPS",
+          "steps": [
+            "Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Microsoft Defender Antivirus\\MAPS yolunu açın.",
+            "Join Microsoft MAPS ayarını Enabled yapın; Options içinde Advanced MAPS seçin.",
+            "Send file samples when further analysis is required ayarını ayrı değerlendirin; veri paylaşımı onayıyla Send safe samples seçilebilir. Cloud block level değerini bu kontrol için koşulsuz Zero tolerance yapmayın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/enable-cloud-protection-microsoft-defender-antivirus"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows; eski ADMX'de Windows Defender Antivirus adı görülebilir. Windows 10/11 için Basic/Advanced veri miktarı ayrımı legacy'dir. Tamper protection yerel/GPO değişikliğini etkileyebilir; etkin sonucu mutlaka okuyun.",
+          "verification": "gpresult ve Get-MpPreference ile MAPSReporting=2 sonucunu kontrol edin; ilke tanımıyla cihazdaki etkin değerin tutarlı olduğunu doğrulayın."
+        }
+      ],
+      "notes": "Cloud protection, sample submission ve cloud block level birbirinden ayrı seçimlerdir.",
+      "changeCaveat": "Cloud protection, sample submission ve cloud block level ayrı seçimlerdir."
+    },
+    "scid_2012": {
+      "title": "Turn on real-time protection",
+      "options": [
+        {
+          "label": "Microsoft Intune — real-time protection",
+          "steps": [
+            "Endpoint security > Antivirus içinde Windows / Microsoft Defender Antivirus profilini düzenleyin.",
+            "Allow Real-Time Monitoring ve Allow On Access Protection değerlerini Allowed yapın; Real Time Scan Direction için Monitor all files (bi-directional) seçin.",
+            "Pilot cihazlarda mevcut antivirus mimarisi ve uygulama etkisini doğrulayarak Assignments üzerinden dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/configure-real-time-protection-microsoft-defender-antivirus"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows, yönetilen Defender Antivirus yapılandırması. Üçüncü taraf antivirus bulunan Passive mode cihazında ilke tek başına Active mode garantisi vermez; ürün geçişi planlanmalıdır. Tamper protection'ı genel çözüm olarak kapatmayın.",
+          "verification": "Intune profil durumunu; Get-MpPreference içinde DisableRealtimeMonitoring=False ve RealTimeScanDirection=0 sonucunu kontrol edin. Çalışan korumayı Windows Security içinde de doğrulayın."
+        },
+        {
+          "label": "Group Policy — real-time protection",
+          "steps": [
+            "Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Microsoft Defender Antivirus\\Real-time Protection yolunu açın.",
+            "Turn off real-time protection ayarını Disabled yapın; Monitor file and program activity on your computer ayarını Enabled yapın.",
+            "Configure monitoring for incoming and outgoing file and program activity ayarını Enabled ve bi-directional seçimiyle yapılandırın; pilot GPO'yu dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/configure-real-time-protection-microsoft-defender-antivirus"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows/uygun ADMX. İlke adındaki Turn off ifadesi nedeniyle Disabled korumayı açma yönüdür. Tamper protection varsa GPO değişikliği etkisiz kalabilir; desteklenen yönetim aracını kullanın.",
+          "verification": "gpresult raporunu ve DisableRealtimeMonitoring=False cihaz sonucunu karşılaştırın; yalnızca GPO'nun varlığını başarı saymayın."
+        }
+      ],
+      "notes": "Defender sensor ve Defender Antivirus real-time protection farklı bileşenlerdir.",
+      "changeCaveat": "Defender sensor ve Defender Antivirus real-time protection farklı bileşenlerdir."
+    },
+    "scid_91": {
+      "title": "Enable Microsoft Defender Antivirus real-time behavior monitoring",
+      "options": [
+        {
+          "label": "Microsoft Intune — behavior monitoring",
+          "steps": [
+            "Endpoint security > Antivirus altında Windows / Microsoft Defender Antivirus profilini düzenleyin.",
+            "Configuration settings içinde Allow behavior monitoring değerini Allowed yapın; pilot gruba atayıp dağıtım sonucunu inceleyin."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/configure-real-time-protection-microsoft-defender-antivirus"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows Defender Antivirus; real-time protection ve ürün çalışma moduyla birlikte değerlendirilir. Tamper protection yönetimi için desteklenen yönetim kanalı kullanılmalıdır.",
+          "verification": "Intune dağıtım sonucunu ve Get-MpPreference içindeki DisableBehaviorMonitoring=False değerini kontrol edin."
+        },
+        {
+          "label": "Group Policy — Turn on behavior monitoring",
+          "steps": [
+            "Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Microsoft Defender Antivirus\\Real-time Protection yolunu açın.",
+            "Turn on behavior monitoring ayarını Enabled yapın; pilot cihazlarda etkin değeri doğrulayarak dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/defender-endpoint/configure-real-time-protection-microsoft-defender-antivirus"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows, uygun ADMX. Tamper protection değişikliği engelleyebilir; güvenlik korumasını kapatmadan yönetim ilkesi üzerinden düzeltin.",
+          "verification": "gpresult ile Turn on behavior monitoring=Enabled ve Get-MpPreference ile DisableBehaviorMonitoring=False sonucunu kontrol edin."
+        }
+      ],
+      "notes": "Bu seçenek diğer scan politikalarını koşulsuz değiştirmez.",
+      "changeCaveat": "Bu seçenek diğer scan politikalarını koşulsuz değiştirmez."
+    },
+    "scid_3011": {
+      "title": "Disable the built-in Guest account",
+      "options": [
+        {
+          "label": "Group Policy — Guest account status",
+          "steps": [
+            "Hedef GPO'da Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "Accounts: Guest account status ayarını Disabled yapın.",
+            "Network access: Sharing and security model for local accounts=Guest only bağımlılığı varsa önce kimlik doğrulamalı paylaşım modelini planlayın; pilot erişim testinden sonra dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/accounts-guest-account-status"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows yerleşik Guest hesabını kapsar; Entra B2B guest kullanıcıları değildir. Guest only paylaşım modeli varsa SMB network logon başarısız olabilir.",
+          "verification": "gpresult/Local Security Policy içinde Guest account status=Disabled sonucunu ve gerekli kullanıcıların kimlik doğrulamalı paylaşım erişimini test edin."
+        }
+      ],
+      "notes": "Kaynak eski tarihli Security Options referansıdır; güncel Windows 10/11 applicability işaretleri ve pilot sonucu birlikte değerlendirilmelidir.",
+      "changeCaveat": "Windows 10/11 ilke desteğini ve etkin sonucu pilot cihazda değerlendirin."
+    },
+    "scid_55": {
+      "title": "Disable 'Network access: Let Everyone permissions apply to anonymous users'",
+      "options": [
+        {
+          "label": "Group Policy — anonymous Everyone token",
+          "steps": [
+            "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "Network access: Let Everyone permissions apply to anonymous users ayarını Disabled yapın; pilot cihazlarda doğrulayıp dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/network-access-let-everyone-permissions-apply-to-anonymous-users"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows anonymous bağlantı token'ındaki Everyone SID davranışını yönetir. Share ACL'deki Everyone write erişimini kaldırmaz; scid_4001 ayrı işlem ister.",
+          "verification": "gpresult/Local Security Policy ile ilgili ayarın Disabled olduğunu doğrulayın; izinli anonim iş akışı varsa pilotta etkisini test edin."
+        }
+      ],
+      "notes": "Eski tarihli Microsoft Security Options referansı; ilke ile paylaşım ACL'si karıştırılmamalıdır.",
+      "changeCaveat": "İlke ile paylaşım ACL'si karıştırılmamalıdır."
+    },
+    "scid_68": {
+      "title": "Disable 'Anonymous enumeration of SAM accounts'",
+      "options": [
+        {
+          "label": "Group Policy — SAM enumeration",
+          "steps": [
+            "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "Network access: Do not allow anonymous enumeration of SAM accounts ayarını Enabled yapın.",
+            "Tek yönlü trust ve anonim dosya/yazıcı listeleme bağımlılıklarını pilotta değerlendirin; sonra hedef üye cihazlara dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/network-access-do-not-allow-anonymous-enumeration-of-sam-accounts"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows üye cihazları. Belgeye göre bu ilke domain controller üzerinde etkili değildir; DC güvenliğini sağladığı iddia edilmez.",
+          "verification": "gpresult/Local Security Policy içinde ayarın Enabled olduğunu; gerekli trust ve authenticated paylaşım erişiminin çalıştığını kontrol edin."
+        }
+      ],
+      "notes": "Öneri başlığında Disable, ilke adında Do not allow bulunduğundan doğru ilke değeri Enabled'dır.",
+      "changeCaveat": "Öneri başlığında Disable, ilke adında Do not allow bulunduğundan doğru ilke değeri Enabled'dır."
+    },
+    "scid_88": {
+      "title": "Disable Anonymous enumeration of shares",
+      "options": [
+        {
+          "label": "Group Policy — SAM accounts and shares enumeration",
+          "steps": [
+            "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "Network access: Do not allow anonymous enumeration of SAM accounts and shares ayarını Enabled yapın.",
+            "Tek yönlü trust ve anonim paylaşım listeleme bağımlılıklarını değerlendirin; pilot üye cihazlarda test ederek dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/network-access-do-not-allow-anonymous-enumeration-of-sam-accounts-and-shares"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Kaynak Windows 10 kapsamını açıkça belirtir; daha yeni OS'de ilke desteği ve etkin sonucu pilotta doğrulayın. Domain controller üzerinde etkili değildir. ANONYMOUS LOGON'a açıkça verilen erişimin tümünü ortadan kaldıran bir ACL temizliği değildir.",
+          "verification": "gpresult/Local Security Policy ile ayarı ve pilotta authenticated paylaşım listelemeyi kontrol edin; anonim enumeration'ın engellendiğini yetkili testle doğrulayın."
+        }
+      ],
+      "notes": "SCID/title ham profille birebir eşleşir; SAM-only ilkesinin yerine accounts and shares ilkesini kullanır.",
+      "changeCaveat": "Bu kontrol SAM-only ilkesinin yerine accounts and shares ilkesini kullanır."
+    },
+    "scid_65": {
+      "title": "Disable 'Store LAN Manager hash value on next password change'",
+      "options": [
+        {
+          "label": "Group Policy — LM hash storage",
+          "steps": [
+            "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "Network security: Do not store LAN Manager hash value on next password change ayarını Enabled yapın.",
+            "Eski uygulamaların uyumluluğunu test edin; mevcut LM hash'lerinin yenilenmesi için parola değişikliklerini kurumun kontrollü hesap yönetimi süreciyle planlayın. Tüm hesap parolalarını koşulsuz sıfırlamayın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/network-security-do-not-store-lan-manager-hash-value-on-next-password-change"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows. Yeni parola değişikliklerinde LM hash depolanmasını önler; ilkeyi açmak mevcut hash'lerin aynı anda silindiğini göstermez.",
+          "verification": "gpresult/Local Security Policy ile Enabled sonucunu doğrulayın; onaylı parola değişikliği sürecinin tamamlanmasını ayrı kayıtla izleyin. Parola hash'lerini çıkarmayı doğrulama yöntemi olarak kullanmayın."
+        }
+      ],
+      "notes": "Eski tarihli kaynakta anlatılan parola yenileme şartı korunmuş, otomatik toplu parola değişikliği üretilmemiştir.",
+      "changeCaveat": "Parola yenileme gereksinimini dikkate alın."
+    },
+    "scid_71": {
+      "title": "Enable 'Limit local account use of blank passwords to console logon only'",
+      "options": [
+        {
+          "label": "Group Policy — blank local passwords",
+          "steps": [
+            "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "Accounts: Limit local account use of blank passwords to console logon only ayarını Enabled yapın.",
+            "Pilot local-account ağ erişimini değerlendirip hedef cihazlara dağıtın; boş parolaların fiziksel console erişimi riskini ayrıca giderin."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/accounts-limit-local-account-use-of-blank-passwords-to-console-logon-only"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows local account remote logon davranışıdır; domain hesabını veya fiziksel console logon'u engellemez. Bazı üçüncü taraf uygulamalar bu ilkeyi bypass edebilir.",
+          "verification": "gpresult/Local Security Policy ile Enabled sonucunu doğrulayın; üretimde yeni boş parolalı hesap açmadan kurumun test ortamında remote/local davranışını değerlendirin."
+        }
+      ],
+      "notes": "Bu ilke güçlü parola politikasının yerine geçmez.",
+      "changeCaveat": "Bu ilke güçlü parola politikasının yerine geçmez."
+    },
+    "scid_72": {
+      "title": "Set LAN Manager authentication level to 'Send NTLMv2 response only. Refuse LM & NTLM'",
+      "options": [
+        {
+          "label": "Group Policy — LAN Manager authentication level",
+          "steps": [
+            "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "Network security: LAN Manager authentication level değerini Send NTLMv2 response only. Refuse LM & NTLM yapın.",
+            "Eski istemci, NAS, uygulama ve trusted domain kimlik doğrulamasını pilotta test edin; uyumluluk sorunlarını gidermeden geniş kapsamlı dağıtmayın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/network-security-lan-manager-authentication-level"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows; seçilen en sıkı seçenek ham Secure Score önerisinin hedefidir. Belge birden fazla seviye tanımlar ve best practice'in ortam gereksinimine bağlı olduğunu belirtir. NTLMv1/LM bağımlı cihazların kimlik doğrulaması kesilebilir; NTLMv2'nin tümden kapatılması değildir.",
+          "verification": "gpresult ile tam seçenek metnini; HKLM\\System\\CurrentControlSet\\Control\\Lsa\\LmCompatibilityLevel değerinin 5 olduğunu okuyun. Gerekli uygulama/domain erişimini test edin."
+        }
+      ],
+      "notes": "Belgenin genel Send NTLMv2 only önerisiyle SCID'nin Refuse LM & NTLM hedefi farklı ayrıntı seviyeleridir; hedef ham profile göre seçilmiştir.",
+      "changeCaveat": "Bu kontrolün Refuse LM & NTLM hedefini daha gevşek Send NTLMv2 only seçeneğiyle karıştırmayın."
+    },
+    "scid_95": {
+      "title": "Enable 'Microsoft network client: Digitally sign communications (always)'",
+      "options": [
+        {
+          "label": "Group Policy — SMB client signing",
+          "steps": [
+            "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "Microsoft network client: Digitally sign communications (always) ayarını Enabled yapın.",
+            "Üçüncü taraf SMB server signing desteğini ve yüksek hızlı ağlarda performansı pilotta test edin; signing desteklemeyen cihazları güncelleyin."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/microsoft-network-client-digitally-sign-communications-always"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows SMBv2/SMBv3 client imzalama gereksinimi; server signing ayarı ayrı ilkedir. If server agrees veya EnableSecuritySignature legacy seçenekleri eşdeğer değildir.",
+          "verification": "gpresult/Local Security Policy ile Enabled sonucunu ve hedef paylaşımlarda imzalı SMB bağlantısının çalıştığını doğrulayın; signing uyumsuzluğunu ilkeyi kapatarak gizlemeyin."
+        }
+      ],
+      "notes": "Microsoft belgesi SMBv1'i önermez ve always ilkesini tercih eder.",
+      "changeCaveat": "SMBv1 önerilmez; always ilkesinin kapsamını dikkate alın."
+    },
+    "scid_94": {
+      "title": "Disable sending unencrypted password to third-party SMB servers",
+      "options": [
+        {
+          "label": "Group Policy — unencrypted SMB password",
+          "steps": [
+            "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "Microsoft network client: Send unencrypted password to third-party SMB servers ayarını Disabled yapın.",
+            "Parola encryption desteklemeyen eski SMB uygulamalarını pilotta belirleyip güncelleyin; hedef cihazlara kontrollü dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/microsoft-network-client-send-unencrypted-password-to-third-party-smb-servers"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows SMB client kimlik doğrulaması. Parola encryption desteklemeyen non-Microsoft SMB server'a authentication başarısız olabilir.",
+          "verification": "gpresult/Local Security Policy ile Disabled sonucunu ve gerekli third-party SMB erişimini doğrulayın."
+        }
+      ],
+      "notes": "Parola aktarım davranışı ile SMB transport encryption aynı ilke değildir.",
+      "changeCaveat": "Parola aktarım davranışı ile SMB transport encryption aynı ilke değildir."
+    },
+    "scid_28": {
+      "title": "Set 'Interactive logon: Machine inactivity limit' to '1-900 seconds'",
+      "options": [
+        {
+          "label": "Group Policy — inactivity lock",
+          "steps": [
+            "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "Interactive logon: Machine inactivity limit için kullanım senaryosuna uygun 1–900 saniye arasında değer seçin; örneğin 900 saniye. 0 veya boş değer kilitlemeyi devre dışı bırakır.",
+            "Screen saver'ın etkin olduğunu kontrol edin; gerekiyorsa ilgili User Configuration\\Administrative Templates\\Control Panel\\Personalization\\Enable screen saver ilkesini değerlendirin.",
+            "Kiosk/üretim iş akışını pilotta test edin; belgeye göre gerekli restart işlemini bakım penceresinde planlayın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/interactive-logon-machine-inactivity-limit"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows 8/Server 2012 ile gelen ayar; Windows 10/11 referansı. 1–900 saniye sınırı Secure Score ham profil hedefidir; Microsoft belge tüm ortamlar için 900 saniyeyi koşulsuz zorunlu tutmaz.",
+          "verification": "Etkin ilke değerinin 1–900 saniye aralığında olduğunu okuyun; restart sonrası pilotta seçilen hareketsizlik süresinde oturumun kilitlendiğini ölçün. Display/power veya screen saver daha erken kilitlenmeye neden olabilir."
+        }
+      ],
+      "notes": "Restart ve kullanıcı verimliliği etkisi kaynakta açıkça belirtilmiştir.",
+      "changeCaveat": "Yeniden başlatma gereksinimini ve kullanıcı verimliliğine etkiyi değerlendirin."
+    },
+    "scid_27": {
+      "title": "Set User Account Control (UAC) to automatically deny elevation requests",
+      "options": [
+        {
+          "label": "Group Policy — standard user elevation",
+          "steps": [
+            "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "User Account Control: Behavior of the elevation prompt for standard users değerini Automatically deny elevation requests yapın.",
+            "Standart kullanıcıların uygulama kurulum/bakım ihtiyaçları için yetkili IT iş akışını hazırlayın; pilotta doğrulayıp dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/user-account-control-behavior-of-the-elevation-prompt-for-standard-users"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Yalnızca standard user elevation davranışıdır; administrator elevation ilkesini değiştirmez. Microsoft belge dual-account kullanımında secure desktop prompt alternatifini tartışır; bu SCID'nin deny hedefini karşılayan seçenek burada ayrı korunur.",
+          "verification": "gpresult/Local Security Policy ile Automatically deny elevation requests seçimini kontrol edin; pilot standard user hesabında yetkili test uygulamasının elevation talebinin Access denied ile sonuçlandığını doğrulayın."
+        }
+      ],
+      "notes": "Yerel administrator hesapları veya UAC bütünü devre dışı bırakılmaz.",
+      "changeCaveat": "Yerel administrator hesapları veya UAC bütünü devre dışı bırakılmaz."
+    },
+    "scid_29": {
+      "title": "Disable 'Enumerate administrator accounts on elevation'",
+      "options": [
+        {
+          "label": "Group Policy — Credential User Interface",
+          "steps": [
+            "Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Credential User Interface yolunu açın.",
+            "Enumerate administrator accounts on elevation ayarını Disabled yapın; pilot cihazlarda elevation UI davranışını doğrulayarak dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-credentialsui"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows device-scope ilke. Administrator hesaplarının listesini gizler; scid_27 deny ilkesi de etkinse standard user için prompt hiç görünmeyebilir.",
+          "verification": "gpresult ile Disabled sonucunu kontrol edin; elevation prompt izin verilen pilot senaryoda administrator listesi yerine kimlik bilgisinin elle girilmesi gerektiğini doğrulayın."
+        }
+      ],
+      "notes": "Administrator listesi gizleme ve elevation talebini reddetme iki ayrı kontroldür.",
+      "changeCaveat": "Administrator listesi gizleme ve elevation talebini reddetme iki ayrı kontroldür."
+    },
+    "scid_66": {
+      "title": "Disable 'Always install with elevated privileges'",
+      "options": [
+        {
+          "label": "Registry — Windows Installer policy",
+          "steps": [
+            "Onaylı pilot cihazda ve ilgili kullanıcı bağlamında mevcut Windows Installer ilke durumunu kaydedin; merkezi ilkelerin bu değerleri yönetip yönetmediğini kontrol edin.",
+            "HKLM\\Software\\Policies\\Microsoft\\Windows\\Installer altında AlwaysInstallElevated REG_DWORD değerini 0 yapın.",
+            "İlgili kullanıcı için HKCU\\Software\\Policies\\Microsoft\\Windows\\Installer altında aynı REG_DWORD değerini 0 yapın; yönetici oturumunun HKCU alanının başka kullanıcının HKCU alanı olmadığını dikkate alın.",
+            "Uygulama dağıtımını yetkili managed installation yöntemiyle sürdürün; kullanıcıların unmanaged MSI paketlerini system yetkisiyle kurmasına dayanan iş akışlarını kaldırın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/win32/msi/alwaysinstallelevated"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows Installer. System yetkisiyle unmanaged MSI kurulumu için iki hive'da da 1 gerekir; güvenli açık hedef iki bağlamda da 0'dır. Kullanıcı per-user değeri değiştirebildiğinden machine policy'nin kapalı tutulması önemlidir.",
+          "verification": "Tam HKLM ve hedef kullanıcının HKCU yollarındaki AlwaysInstallElevated değerlerinin REG_DWORD 0 olduğunu okuyun; managed uygulama dağıtımının çalıştığını kontrollü testle doğrulayın."
+        }
+      ],
+      "notes": "Belge 1/iki hive koşulunu ve REG_DWORD türünü açıkça verir; güvenli 0 hedefi bu koşulun tersine dayanır. Tüm kullanıcı hive'larını yükleyen toplu registry betiği üretilmemiştir.",
+      "changeCaveat": "Makine ve kullanıcı hive'larındaki politika değerlerini birlikte doğrulayın; toplu kullanıcı hive'ı değişikliği uygulamayın."
+    },
+    "scid_93": {
+      "title": "Disable the local storage of passwords and credentials",
+      "options": [
+        {
+          "label": "Group Policy — Credential Manager storage",
+          "steps": [
+            "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "Network access: Do not allow storage of passwords and credentials for network authentication ayarını Enabled yapın.",
+            "Microsoft Account ve domain hesabıyla erişilmeyen network kaynaklarında yeniden parola girişi etkisini değerlendirin; pilotta test edin ve gerekli restart işlemini planlayın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/network-access-do-not-allow-storage-of-passwords-and-credentials-for-network-authentication"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows Credential Manager network credential storage politikasıdır. Tüm uygulama parolalarını veya offline domain logon cache'ini aynı anda temizlemez; CachedLogonsCount farklı ayardır ve bu seçenek tarafından değiştirilmez.",
+          "verification": "Restart sonrası gpresult/Local Security Policy ile Enabled sonucunu ve pilotta network credential kullanım davranışını doğrulayın."
+        }
+      ],
+      "notes": "Başlığın geniş ifadesi belge kapsamına daraltılmıştır; disk üstündeki tüm credential verilerini silme iddiası yoktur.",
+      "changeCaveat": "Bu ilke diskteki tüm kimlik bilgisi verilerini silmez."
+    },
+    "scid_40": {
+      "title": "Disable 'Domain member: Disable machine account password changes'",
+      "options": [
+        {
+          "label": "Group Policy — machine account password rotation",
+          "steps": [
+            "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "Domain member: Disable machine account password changes ayarını Disabled yapın.",
+            "Non-persistent VDI ve read-only OS volume senaryolarını ayrıca değerlendirin; kaybolan machine password değişikliklerinin secure channel'a etkisini gidererek pilot dağıtım yapın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/domain-member-disable-machine-account-password-changes"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Active Directory domain üyesi Windows cihazları. Disabled normal periyodik değişimi mümkün kılar; mevcut Max machine account password age ayrı ayardır. Entra-only cihazla karıştırılmamalıdır.",
+          "verification": "gpresult/Local Security Policy ile Disabled sonucunu kontrol edin; domain trust/secure channel ve planlı machine password rotation kayıtlarını izleyin. Parolayı zorla değiştiren toplu komut çalıştırmayın."
+        }
+      ],
+      "notes": "Kaynağın Reference ve Countermeasure bölümleri Disabled değerinde tutarlıdır; Vulnerability bölümündeki ters anlamlı ifade esas alınmamıştır."
+    },
+    "scid_36": {
+      "title": "Enable 'Domain member: Require strong (Windows 2000 or later) session key'",
+      "options": [
+        {
+          "label": "Group Policy — strong secure-channel session key",
+          "steps": [
+            "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options yolunu açın.",
+            "Domain member: Require strong (Windows 2000 or later) session key ayarını Enabled yapın.",
+            "Tüm ilgili ve trusted domain controller'ların güçlü anahtar desteğini doğrulayın; domain join ve authentication akışlarını pilotta test ederek dağıtın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/domain-member-require-strong-windows-2000-or-later-session-key"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "AD domain üyesi Windows cihazları. Secure channel için 128-bit key desteği olmayan legacy domain controller ile bağlantı kurulamaz; trusted domain uyumluluğu kontrol edilmelidir.",
+          "verification": "gpresult/Local Security Policy ile Enabled sonucunu ve pilot domain join/secure-channel authentication işlemlerinin başarılı olduğunu doğrulayın."
+        }
+      ],
+      "notes": "Eski tarihli kaynakta default-values tablosu eksik render edildiğinden varsayılan değer için iddia eklenmemiştir; seçenek açık Reference/Countermeasure metnine dayanır."
+    },
+    "scid_87": {
+      "title": "Disable Solicited Remote Assistance",
+      "options": [
+        {
+          "label": "Group Policy — Configure Solicited Remote Assistance",
+          "steps": [
+            "Hedef Windows cihazlarını yöneten GPO'yu düzenleyin; önce pilot kapsamı ve mevcut Remote Assistance destek bağımlılıklarını değerlendirin.",
+            "Computer Configuration\\Policies\\Administrative Templates\\System\\Remote Assistance\\Configure Solicited Remote Assistance yolunu açın.",
+            "Configure Solicited Remote Assistance değerini Disabled yapın; GPO'yu hedef cihazlara uygulayın. Not configured aynı güvenlik sonucunu garanti etmez."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-remoteassistance"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Windows cihaz kapsamı; kullanılan Windows sürümü ve ADMX desteğini kontrol edin. Remote Assistance davetiyle çalışan destek akışı kapanır; Remote Desktop ve Quick Assist farklı özelliklerdir.",
+          "verification": "Hedef cihazda gpresult raporunda uygulanan GPO'yu ve ilgili ayarın Disabled olduğunu kontrol edin. HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services altında fAllowToGetHelp değerinin REG_DWORD 0 olduğunu doğrulayın; Defender değerlendirmesinin yenilenmesini ayrıca izleyin."
+        },
+        {
+          "label": "Microsoft Intune — Settings catalog",
+          "steps": [
+            "Microsoft Intune admin center içinde Devices > Manage devices > Configuration > Create > New policy yolunu açın.",
+            "Platform olarak Windows 10 and later, Profile type olarak Settings catalog seçin; profile açıklayıcı bir ad verin.",
+            "Configuration settings > Add settings içinde Configure Solicited Remote Assistance arayın; System > Remote Assistance karşılığı olan cihaz kapsamındaki ayarı seçip Disabled yapın.",
+            "Assignments içinde pilot cihaz grubunu seçin; Review + create ile kaydedin. Mevcut Settings catalog profilini güncelliyorsanız aynı ayarı Configuration settings içinde düzenleyin.",
+            "Ayar tenant arayüzünde görünmüyorsa benzer adlı başka bir ayarı seçmeyin; desteklenen OS ve ayarın Learn more bağlantısındaki RemoteAssistance/SolicitedRemoteAssistance eşleşmesini kontrol edin."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/intune/intune-service/configuration/settings-catalog",
+            "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-remoteassistance"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Intune ile yönetilen, RemoteAssistance CSP desteği bulunan Windows 10 version 1703 ve sonrası Pro, Enterprise, Education veya IoT Enterprise cihazları. Settings catalog yaklaşımı kamuya açık CSP ve Intune belgelerine dayanır; tenant içindeki ayar görünürlüğü canlı olarak kontrol edilmemiştir. Ekran görüntüsündeki eski Administrative Templates oluşturma akışı güncel yol olarak sunulmaz.",
+          "verification": "Profilin View report ve per-setting status sonuçlarında Success durumunu kontrol edin; Error veya Conflict kayıtlarını inceleyin. Cihazdaki etkin ayarı ve fAllowToGetHelp=0 sonucunu ayrıca doğrulayın.",
+          "displayApplicability": "Intune ile yönetilen, RemoteAssistance CSP desteği bulunan Windows 10 version 1703 ve sonrası Pro, Enterprise, Education veya IoT Enterprise cihazları. Ayar Settings catalog içinde görünmüyorsa OS desteğini ve Learn more bağlantısındaki CSP eşleşmesini kontrol edin."
+        },
+        {
+          "label": "Registry — yalnızca onaylı hedef cihaz",
+          "steps": [
+            "Yetkili yönetici olarak yalnızca hedef cihazdaki ilgili registry anahtarının mevcut durumunu kaydedin; değişikliğin GPO veya Intune tarafından yönetilip yönetilmediğini kontrol edin.",
+            "Registry Editor içinde HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services anahtarını açın.",
+            "fAllowToGetHelp değerini REG_DWORD türünde oluşturun veya düzenleyin ve değer verisini 0 yapın.",
+            "İlke dağıtımı ve destek iş akışını kontrol ederek değişikliği pilot cihazda doğrulayın; tüm cihazlara koşulsuz registry betiği uygulamayın."
+          ],
+          "sourceUrls": [
+            "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-remoteassistance"
+          ],
+          "verifiedDate": "2026-10-01",
+          "applicability": "Anahtar, tür ve 0 değeri kullanıcı tarafından sağlanan 2026-10-01_13h41_58.png ekranıyla; ilke adı ve registry eşlemesi Microsoft Learn ile doğrulanmıştır. Doğrudan registry değişikliği merkezi GPO veya MDM ilkesi tarafından geri yazılabilir.",
+          "verification": "Registry Editor ile tam anahtarda fAllowToGetHelp türünün REG_DWORD ve verisinin 0 olduğunu okuyun; etkin GPO/MDM sonucu ile tutarlı olduğunu kontrol edin.",
+          "displayApplicability": "Yetkili yönetici tarafından doğrulanmış hedef Windows cihazı. Doğrudan registry değişikliği merkezi GPO veya MDM ilkesi tarafından geri yazılabilir."
+        }
+      ],
+      "notes": "Bu seçenekler kamuya açık belgeler ve kullanıcı ekranına dayalı, özgün Türkçe hazırlanmış küratörlü yönergelerdir; portalın canlı içeriği veya otomatik API çıktısı değildir. Kaynak doğrulama tarihi bir tenant üzerinde uygulama testi yapıldığı anlamına gelmez."
+    }
+  }
+}

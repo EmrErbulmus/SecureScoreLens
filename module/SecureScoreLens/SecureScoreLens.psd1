@@ -1,6 +1,6 @@
 @{
     RootModule        = 'SecureScoreLens.psm1'
-    ModuleVersion     = '3.1.4'
+    ModuleVersion     = '3.2.2'
     GUID              = 'b7e4c1a2-5f38-4d6b-9c07-2a1e8d4f6b31'
     Author            = 'KocSistem Siber Guvenlik'
     CompanyName       = 'KocSistem'
@@ -19,6 +19,7 @@
         'SecureScoreLens.psd1'
         'assets/secure_score_assessment.py'
         'assets/secure_score_tr.json'
+        'assets/remediation_options_tr.json'
     )
 
     PrivateData = @{
@@ -28,6 +29,22 @@
             LicenseUri   = ''
             ProjectUri   = ''
             ReleaseNotes = @'
+3.2.2
+- Bulgu kartlari: yalnizca ilgili iyilestirme, ortam bagimliligi ve dogrulama bilgisi
+- Iyilestirme Secenekleri belirgin normal-case baslik; okunabilir belge baglantilari
+- Tekrarlanan ceviri/kaynak/kapsam aciklamalari tek Yontem ve Kapsam notunda
+- Eksik uygulama bilgisi kisa, dogru portal yonlendirmesiyle; denetim metadatasi korunur
+
+3.2.1
+- Ozgun Ingilizce kaynak kutulari HTML/PDF gorunumunden kaldirildi; denetim verisi korunur
+- Iyilestirme Secenekleri yalnizca baslik eslesmeli cihaz portal yonlendirmeleri icin
+- Normal Secure Score yonergeleri korunur; gereksiz eksik secenek aciklamasi kaldirildi
+
+3.2.0
+- Turkce How-to kapsam durumu ve eksik ceviriler icin etiketli ozgun metin
+- Kaynak incelemeli yerel Remediation options; yeni API veya izin yok
+- Bulgu tablosunda beyaz hucreler ve ekran/yazdirma icin belirgin ince kenarliklar
+
 2.0.0
 - Bolumlendirilmis rapor: Genel Bakis / Tum Iyilestirme Islemleri / 30-60-90 Gun Yol Haritasi
 - Etki derecesi modeli (Kritik / Yuksek / Orta / Dusuk) ve etkiye gore siralama

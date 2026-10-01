@@ -22,6 +22,9 @@ $here = $PSScriptRoot
 if (-not $here) { $here = Split-Path -Parent $MyInvocation.MyCommand.Path }
 
 $source = Join-Path $here 'Modul'
+if (-not (Test-Path -LiteralPath $source)) {
+    $source = Join-Path (Split-Path -Parent $here) 'module\SecureScoreLens'
+}
 $moduleName = 'SecureScoreLens'
 
 # Kullanicinin modul klasorunu PSModulePath'ten oku.

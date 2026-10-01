@@ -1,6 +1,12 @@
-# SecureScoreLens
+<p align="center">
+  <img src="docs/gorseller/banner.svg" alt="SecureScoreLens" width="860">
+</p>
 
-**Microsoft 365 Secure Score verilerini analiz ederek yönetici seviyesinde, müşteriye sunulabilir profesyonel güvenlik değerlendirme raporları oluşturur.**
+<h1 align="center">SecureScoreLens</h1>
+
+<p align="center">
+  <b>Microsoft 365 Secure Score'u, müşteriye sunulabilir bir güvenlik değerlendirme raporuna dönüştürür.</b>
+</p>
 
 [![PowerShell 5.1+](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE)](https://learn.microsoft.com/powershell/)
 [![Python 3.8+](https://img.shields.io/badge/Python-3.8%2B-3776AB)](https://www.python.org/)
@@ -11,7 +17,57 @@ Tenant'ınıza salt-okunur bağlanır, Secure Score puanını ve kapsamdaki **t�
 işlemlerini okur, sonucu **tek dosyalık, çevrimdışı çalışan, Türkçe** bir HTML rapora
 dönüştürür. Tenant üzerinde hiçbir değişiklik yapmaz, hiçbir kimlik bilgisi saklamaz.
 
-<img width="1280" height="640" alt="securescorelens-social-preview" src="https://github.com/user-attachments/assets/85dfd1f1-7465-409b-96a7-68d38910604e" />
+---
+
+## v3.2.2 — profesyonel bulgu ve iyileştirme görünümü
+
+İngilizce kontrol başlıkları ve ürün/UI adları korunur; uygulama açıklamaları Türkçedir.
+Paket, mevcut 460 Microsoft profilinin tamamını kapsar: 90 önceki ayrıntılı çeviri,
+185 kaynak yönergesi uyarlaması, 184 cihaz portal yönlendirmesi ve Microsoft'un adım
+sağlamadığı 1 profil için açık uyarı. **Başlık çevirileri yalnızca 120 kontroldedir**;
+bu sayı How-to veya ayrıntılı bulgu kapsamı değildir.
+
+Kaynak uyarlaması, tüm adımların güncel tenant arayüzünde doğrulandığı anlamına gelmez.
+Çelişkili kaynak eşikleri ve eksik yönergeler uyarıyla gösterilir. Özgün İngilizce
+Microsoft metni denetim metadata/JSON'unda korunur; HTML, PDF ve görünüm dışa
+aktarımlarında ek kaynak/etki kutusu olarak gösterilmez. Gelecekteki bilinmeyen
+cihaz kontrollerinde yalnızca dar biçimde tanınan portal yönlendirmesi çevrilir.
+Diğer yeni/değişen metinler sessizce Türkçe sayılmaz: güncel uygulama adımları için
+ilgili Secure Score önerisinin portal bağlantısına yönlendirilir. Microsoft'un adım
+sağlamadığı öneriler açıkça belirtilir; yapılacak işlem uydurulmaz.
+
+Kaynak incelemeli katalog **184 cihaz kontrolünden 33'ünü (%17,93)**, **41 seçeneği**
+ve **30 Microsoft Learn kaynağını** kapsar; **151 cihaz kontrolünde ayrıntılı seçenek
+eksiktir**. `scid_87` için GPO, güncel Intune Settings catalog ve exact registry
+seçenekleri aynı How-to içeriğiyle işlem satırında ve Bulgu Raporu'nda gösterilir.
+Sensor yönergeleri koşullu teşhis/onboarding adımlarıdır; garantili onarım değildir.
+Diğer kontrollerde tüm Remediation options yöntemleri varmış gibi davranılmaz.
+**İyileştirme Seçenekleri** yalnızca cihaz kategorisinde, katalogdaki kontrol ID/başlığı
+eşleşen ve Microsoft metni gerçekten portal seçeneklerine yönlendiren kontrollerde
+gösterilir. Normal Secure Score önerilerinde mevcut Türkçe öneri korunur; gereksiz
+eksik GPO/Intune/registry açıklaması eklenmez.
+Kartlarda tekrarlanan çeviri/kaynak/kapsam metinleri ve inceleme tarihleri gösterilmez;
+sınırlar bir kez **Yöntem ve Kapsam** notunda açıklanır. Bulguların girişinde, Findings-only
+PDF'de de yer alan kısa uygulama-kapsam açıklaması bulunur. İyileştirme Seçenekleri
+başlığı okunaklı 16 px, kalın ve mavi vurgulu normal büyük/küçük harf düzenindedir.
+Maddi lisans/OS/iş kesintisi bağımlılıkları, güvenli hedefleme ve doğrulama adımları
+korunur. Belge bağlantıları uzun URL metinleri yerine okunabilir etiketlerle sunulur.
+Kaynak tarihleri, özgün applicability/notes alanları ve audit metadata dosyalarda kalır;
+özet display alanları yeni kaynak doğrulaması veya tenant testi iddiası değildir.
+Bu paket **yerel, küratörlü
+içeriktir; canlı tenant API verisi değildir**. Recommendation API yalnızca
+`remediationType` gibi alanlar sunar; tam portal adımlarını sağlamaz. Ek izin,
+portal scraping veya otomatik düzeltme eklenmemiştir.
+
+Ayrıntılı sınırlar ve kontrol bazlı kaynaklar:
+[Remediation options kapsam raporu](docs/remediation-coverage-v3.2.md).
+
+Bulgu tablosu ekran ve yazdırma/PDF görünümünde beyaz hücreler ve ince belirgin
+kenarlıklar kullanır. PDF, tarayıcının yazdırma özelliğiyle oluşturulur.
+
+Doğrulama: `python src/secure_score_assessment.py --self-test` ve
+`python -m unittest discover -s tests -v`. Windows oturum açma ve gerçek tenant
+üzerinde uçtan uca uygulama testi bu sürümün Linux doğrulamasına dahil değildir.
 
 ---
 
@@ -66,7 +122,7 @@ Graph PowerShell istemci kimliği kullanılır; yönetilecek bir secret yoktur.
 
 ### Kurulum gerektirmeyen yol (önerilen)
 
-1. [Releases](../../releases) sayfasından son sürüm ZIP dosyasını indirin.
+1. [Releases](https://github.com/EmrErbulmus/SecureScoreLens/releases) sayfasından son sürüm ZIP dosyasını indirin.
 2. ZIP'e sağ tıklayın → **Tümünü ayıkla**.
    *(ZIP'in içinden doğrudan çalıştırmayın; Windows dosyaları geçici bir klasöre açar.)*
 3. Ayıklanan klasördeki **`BASLAT.cmd`** dosyasına çift tıklayın.
@@ -77,13 +133,17 @@ istenmez. Silmek için klasörü silmek yeterlidir.
 ### PowerShell modülü olarak
 
 ```powershell
-# Depoyu klonlayın veya ZIP'i ayıklayın, sonra:
+# Depo ZIP'i veya klonlanan depo:
 Import-Module .\module\SecureScoreLens\SecureScoreLens.psd1 -Force
 Invoke-SecureScoreLens
+
+# Çalıştırılabilir release ZIP'inin kökünde modül yolu farklıdır:
+# Import-Module .\Modul\SecureScoreLens.psd1 -Force
 ```
 
 Komutu her oturumda kullanılabilir yapmak için `launcher\Istege-Bagli-Kalici-Kurulum.ps1`
 betiğini çalıştırın (kullanıcı profiline kopyalar, yönetici gerektirmez, `-Kaldir` ile geri alınır).
+Release ZIP'inde bu installer dosyası `BASLAT.cmd` ile aynı kök klasördedir.
 
 ### Sık kullanılan parametreler
 
@@ -109,6 +169,51 @@ Invoke-SecureScoreLens -SelfTest
 | `-Demo` / `-SelfTest` | Örnek veriyle çalıştır / motor testlerini çalıştır |
 
 > `Invoke-SecureScoreAssessment` eski komut adıdır ve takma ad olarak çalışmaya devam eder.
+
+---
+
+## Ekran görüntüleri
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="docs/gorseller/01-genel-bakis.png" alt="Genel Bakış"><br>
+      <b>Genel Bakış</b><br>
+      <sub>Secure Score kartı, yönetici özeti, etki derecesi dağılımı</sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="docs/gorseller/02-islemler.png" alt="Tüm İyileştirme İşlemleri"><br>
+      <b>Tüm İyileştirme İşlemleri</b><br>
+      <sub>Filtreler, sorumlu/termin atama, CSV ve PDF dışa aktarma</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="docs/gorseller/03-yol-haritasi.png" alt="30/60/90 Gün Yol Haritası"><br>
+      <b>30/60/90 Gün Yol Haritası</b><br>
+      <sub>Etki önceliğine göre üç faza dağıtılmış plan</sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="docs/gorseller/04-ilerleme.png" alt="İlerleme ve Kapsam"><br>
+      <b>İlerleme ve Kapsam</b><br>
+      <sub>Puanın neden değiştiğini açıklayan kapsam analizi</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="docs/gorseller/05-bulgu-raporu.png" alt="Bulgu Raporu"><br>
+      <b>Bulgu Raporu</b><br>
+      <sub>Açık her madde için danışmanlık biçiminde bulgu kartı</sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="docs/gorseller/06-kapak.png" alt="Kapak sayfası"><br>
+      <b>Markalı kapak sayfası</b><br>
+      <sub>Logo, kurumsal renk ve hazırlayan bilgisi</sub>
+    </td>
+  </tr>
+</table>
+
+> **[Örnek raporu indirip tarayıcıda açın](docs/ornek/ornek-rapor.html)** — tek dosya, çevrimdışı çalışır.
 
 ---
 
@@ -152,9 +257,6 @@ Açık her madde için ayrı bir **bulgu kartı** — danışmanlık raporu biç
 
 Bölümün başında yönetici özeti, raporun amacı ve renk kodlu risk duruşu tablosu yer alır.
 **PDF olarak indir** düğmesi yalnızca bu bölümü basar.
-
-<img width="1374" height="1223" alt="SecureScoreLens1" src="https://github.com/user-attachments/assets/a4912288-0b2d-482c-877a-53b04a83555d" />
-
 
 ---
 

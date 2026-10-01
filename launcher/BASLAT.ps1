@@ -39,6 +39,9 @@ if (-not $here) {
 }
 
 $manifest = Join-Path $here 'Modul\SecureScoreLens.psd1'
+if (-not (Test-Path -LiteralPath $manifest)) {
+    $manifest = Join-Path (Split-Path -Parent $here) 'module\SecureScoreLens\SecureScoreLens.psd1'
+}
 
 Write-Host ''
 Write-Host '  ============================================================' -ForegroundColor DarkCyan

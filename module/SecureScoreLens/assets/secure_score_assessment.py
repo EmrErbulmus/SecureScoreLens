@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Microsoft 365 Secure Score Assessment Tool  (v2)
+Microsoft 365 Secure Score Assessment Tool  (SecureScoreLens v3.2.2)
 ================================================
 
 Read-only tenant assessment. Connects to a Microsoft 365 / Entra ID tenant with an
@@ -34,6 +34,7 @@ import csv
 import datetime as dt
 import html
 import base64
+import hashlib
 import json
 import os
 import re
@@ -47,7 +48,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 GRAPH = "https://graph.microsoft.com/v1.0"
 LOGIN = "https://login.microsoftonline.com"
-USER_AGENT = "SecureScoreLens/3.1"
+USER_AGENT = "SecureScoreLens/3.2.2"
 TIMEOUT = 60
 
 # --------------------------------------------------------------------------- #
@@ -121,9 +122,8 @@ STR = {
         "fnd_purpose_b": ("Secure Score önerilerini teknik kontrol listesi seviyesinden çıkarıp "
                           "yönetilebilir, önceliklendirilebilir ve aksiyon alınabilir bir güvenlik "
                           "iyileştirme yol haritasına dönüştürmektir. Her maddenin yapılandırma "
-                          "adımları Microsoft'un kendi yönergesinden alınmış; açıklama, etki, "
-                          "ortam bağımlılığı ve doğrulama adımları ise kurumsal kullanıma uygun "
-                          "biçimde ayrıca hazırlanmıştır. Risk seviyeleri Microsoft'un bir "
+                          "adımları, ortam bağımlılığı ve doğrulama bilgileri değişiklik "
+                          "planlamasını desteklemek üzere bir araya getirilmiştir. Risk seviyeleri Microsoft'un bir "
                           "sınıflandırması değildir; bu raporun <b>etki önceliklendirme "
                           "modeliyle</b> hesaplanır ve modelin formülü Yol Haritası bölümünde "
                           "açıkça belirtilmiştir."),
@@ -149,9 +149,8 @@ STR = {
         "fnd_pdf_fail": ("Tarayıcı yazdırma penceresini açamadı. Ctrl+P ile elle "
                          "yazdırıp hedef olarak “PDF olarak kaydet” seçebilirsiniz."),
         "nav_findings": "Bulgu Raporu",
-        "fnd_lead": ("Açık her madde için ayrı bir bulgu kartı. Yapılandırma adımları, "
-                     "öncelik sırası, puan ve tehdit türleri Microsoft Graph'tan; açıklama, "
-                     "etki, ortam bağımlılığı ve doğrulama adımları içerik paketinden gelir."),
+        "fnd_lead": ("Açık her öneri için ayrı bir bulgu kartı: etki, öncelik ve ilgili "
+                     "iyileştirme değişikliği birlikte sunulur."),
         "fnd_n": "Bulgu",
         "fnd_resource": "Etkilenen Kaynak",
         "fnd_desc": "Açıklama",
@@ -169,8 +168,8 @@ STR = {
         "fnd_threats": "Tehdit türleri",
         "fnd_scope": "kapsamındaki yapılandırmalar",
         "fnd_none": "Açık madde yok — bu bölümde gösterilecek bulgu bulunmuyor.",
-        "fnd_nopack": ("Bu madde için ayrıntılı içerik henüz hazırlanmamıştır. "
-                       "Yukarıdaki yapılandırma adımları Microsoft'un kendi yönergesidir."),
+        "fnd_nopack": ("Bu madde için ek açıklama/etki içeriği henüz hazırlanmamıştır. "
+                       "Yapılandırma metninin çeviri ve kaynak kapsamı yukarıda ayrıca belirtilmiştir."),
         "fnd_count": "açık bulgu",
         "cov_title": "Microsoft 365 Secure Score Değerlendirmesi",
         "cov_prepared_for": "Hazırlanan kurum",
@@ -369,7 +368,7 @@ STR = {
         "col_effect": "Kullanıcı üzerindeki etkisi", "threats": "Önlediği tehditler",
         "quickwins_short": "Hızlı kazanım", "closed_short": "Kapatılan",
         "action_unit": "işlem", "at_glance": "Özet bilgi", "implementation": "Nasıl yapılır",
-        "details": "Ayrıntılar", "open_portal": "Portalda aç",
+        "details": "Ayrıntılar", "open_portal": "Portala aç",
         "no_remediation": "Bu işlem için Microsoft tarafından adım bilgisi sağlanmamış.",
         "all_actions": "Tüm iyileştirme işlemleri",
         "status_dist": "İşlem durumu dağılımı",
@@ -380,7 +379,17 @@ STR = {
         "expand_all": "Tümünü aç", "collapse_all": "Tümünü kapat",
         "reset": "Temizle", "shown": "işlem gösteriliyor",
         "na_line": "{n} kontrol maddesi bu tenant'ta uygulanabilir değil (ilgili ürün lisansı yok) ve puan hesabına dahil edilmemiştir.",
-        "method": "Yöntem ve sınırlar",
+        "method": "Yöntem ve Kapsam",
+        "guidance_method": (
+            "Uygulama metinleri Microsoft Secure Score profillerinden Türkçeye çevrilmiş veya uyarlanmıştır. "
+            "Yerel, kaynak incelemeli ayrıntılı seçenek kataloğu {reviewed}/184 cihaz kontrolünü kapsar; "
+            "{missing} kontrol için ayrıntılı seçenek bulunmaz. Genel portal yönlendirmeleri ayrıntılı "
+            "uygulama adımı değildir; yeni veya değişmiş metinlerin Türkçe adımları mevcut olmayabilir. "
+            "Tenant ayarlarının etkinliği veya değişikliklerin uygulanması bu rapor tarafından doğrulanmamıştır. "
+            "Özgün metinler ve kaynak inceleme tarihleri denetim metadata/JSON'unda korunur."),
+        "fnd_scope_note": (
+            "İyileştirme adımları Microsoft Secure Score önerileri ve belirtilen Microsoft belgelerine dayanır. "
+            "Uygulamadan önce kurumun yönetim yöntemi ve değişiklik süreciyle uyumu değerlendirilmelidir."),
         "m1": "Puan, maksimum puan ve yüzde doğrudan tenant'ın Microsoft Secure Score ölçümünden alınır; hesaplanmaz.",
         "m2": "Her iyileştirme işlemi en fazla 10 puandır. Çoğu ya tamamen alınır ya da hiç alınmaz; bazıları ise yapılandırma oranına göre kısmi puan verir (örneğin kullanıcıların yarısı kapsanıyorsa puanın yarısı).",
         "m3": "Bir değişiklik yaptıktan sonra puana yansıması 24-48 saat sürebilir.",
@@ -707,6 +716,17 @@ STR = {
         "reset": "Reset", "shown": "actions shown",
         "na_line": "{n} controls are not applicable to this tenant (product not licensed) and are excluded from the score maths.",
         "method": "Methodology and limits",
+        "guidance_method": (
+            "Guidance is based on Microsoft Secure Score profiles and the cited Microsoft documents. "
+            "The separate Turkish reviewed catalogue covers {reviewed}/184 device controls; {missing} "
+            "have no detailed options. English reports use the original English recommendations. "
+            "Portal redirects are not detailed implementation steps. This report has not verified "
+            "effective tenant settings or the application of changes. Original text and review dates "
+            "are retained in audit metadata/JSON."),
+        "fnd_scope_note": (
+            "Remediation guidance is based on Microsoft Secure Score recommendations and the cited "
+            "Microsoft documents. Assess compatibility with your management approach and change "
+            "process before implementation."),
         "m1": "Score, maximum and percentage are taken directly from the tenant's own Microsoft Secure Score measurement; they are not recalculated.",
         "m2": "Each improvement action is worth up to 10 points. Most are scored all-or-nothing; some give partial credit in proportion to configuration coverage (e.g. half the users covered gives half the points).",
         "m3": "After making a change it can take 24-48 hours for the score to reflect it.",
@@ -1140,10 +1160,71 @@ def classify(entry: Dict[str, Any], profile: Dict[str, Any],
 # Microsoft Graph returns improvement-action titles, remediation steps and user
 # impact text in English only. When a Turkish report is requested we overlay a
 # bundled translation pack, matched by control id. Anything without a
-# translation keeps its original English text, so no content is ever lost.
+# missing translation is explicitly labelled, with the original retained.
 # --------------------------------------------------------------------------- #
 TR_PACK_FILES = ("secure_score_tr.json", "tr/secure_score_tr.json")
 _TR_PACK_CACHE: Optional[Dict[str, Dict[str, str]]] = None
+_OPTIONS_PACK_CACHE: Optional[Dict[str, Any]] = None
+
+
+def load_remediation_options() -> Dict[str, Any]:
+    """Load reviewed, static guidance; never request tenant remediation data."""
+    global _OPTIONS_PACK_CACHE
+    if _OPTIONS_PACK_CACHE is not None:
+        return _OPTIONS_PACK_CACHE
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "remediation_options_tr.json")
+    pack: Dict[str, Any] = {}
+    try:
+        with open(path, encoding="utf-8-sig") as fh:
+            raw = json.load(fh)
+        entries = raw.get("controls", {}) if isinstance(raw, dict) else {}
+        if isinstance(entries, dict):
+            pack = {str(k).lower(): v for k, v in entries.items() if isinstance(v, dict)}
+    except (OSError, ValueError, TypeError):
+        pass
+    _OPTIONS_PACK_CACHE = pack
+    return pack
+
+
+def translate_generic_remediation(text: str) -> Optional[str]:
+    """Recognise only Microsoft's known device redirect, independent of SCID."""
+    normal = re.sub(r"\s+", " ", _strip_html(text)).strip()
+    pattern = (r"Within Microsoft 365 security, go to "
+               r"(?:Vulnerability|Exposure) management\s*(?:>\s*)?Recommendations"
+               r"\s*, read the relevant security recommendation and choose remediation or exception options\.")
+    if not re.fullmatch(pattern, normal, re.IGNORECASE):
+        return None
+    return ("Microsoft Defender portalında Exposure management > Recommendations > Devices > "
+            "Misconfigurations yolunu izleyin. İlgili güvenlik önerisini açın ve Remediation options "
+            "bölümünü inceleyin. Ortamınıza uygun düzeltme yöntemini seçin; gerekirse gerekçeli "
+            "bir istisna değerlendirin.")
+
+
+def reviewed_options_match(control: Dict[str, Any], entry: Dict[str, Any]) -> bool:
+    """Only augment an exact catalogue title with an actual known portal redirect."""
+    title = str(control.get("title") or "").strip()
+    original = control.get("remediationOriginal", control.get("remediation", ""))
+    return bool(entry and str(control.get("category") or "").casefold() == "device"
+                and title and title == str(entry.get("title") or "").strip()
+                and translate_generic_remediation(str(original)) is not None)
+
+
+def document_link_label(url: str) -> str:
+    """Readable labels derived from the cited document path, not new research."""
+    parsed = urllib.parse.urlparse(url)
+    slug = urllib.parse.unquote(parsed.path.rstrip("/").rsplit("/", 1)[-1])
+    labels = {
+        "policy-csp-remoteassistance": "RemoteAssistance — Policy CSP",
+        "policy-csp-autoplay": "AutoPlay — Policy CSP",
+        "policy-csp-credentialsui": "Credentials UI — Policy CSP",
+        "settings-catalog": "Intune — Settings catalog",
+        "get-smbshareaccess": "Get-SmbShareAccess",
+        "grant-smbshareaccess": "Grant-SmbShareAccess",
+        "revoke-smbshareaccess": "Revoke-SmbShareAccess",
+        "alwaysinstallelevated": "AlwaysInstallElevated",
+    }
+    title = labels.get(slug.lower(), slug.replace("-", " ").capitalize() or "İlgili belge")
+    return ("Microsoft Learn — " if parsed.hostname == "learn.microsoft.com" else "") + title
 
 
 def load_translation_pack(explicit: Optional[str] = None) -> Dict[str, Dict[str, str]]:
@@ -1179,12 +1260,13 @@ def load_translation_pack(explicit: Optional[str] = None) -> Dict[str, Dict[str,
 
 def apply_translations(controls: List[Dict[str, Any]],
                        pack: Dict[str, Dict[str, str]]) -> int:
-    """Overlay translated title / remediation / impact text. Returns hit count."""
+    """Overlay Turkish guidance and record coverage without hiding source text."""
     hits = 0
     for c in controls:
-        entry = pack.get(str(c.get("id", "")).lower())
-        if not entry:
-            continue
+        entry = pack.get(str(c.get("id", "")).lower(), {})
+        c["remediationOriginal"] = c.get("remediation", "")
+        c["remediationImpactOriginal"] = c.get("remediationImpact", "")
+        c["remediationCoverage"] = "missing"
         used = False
         # The action's main name deliberately stays in English so it matches the
         # Microsoft 365 Defender portal; the Turkish wording is offered alongside.
@@ -1194,9 +1276,39 @@ def apply_translations(controls: List[Dict[str, Any]],
             used = True
         for field in ("remediation", "remediationImpact"):
             text = entry.get(field)
+            if (field == "remediation" and entry.get("remediationSourceSha256")
+                    and c.get("remediationSourceSha256")
+                    and entry["remediationSourceSha256"] != c["remediationSourceSha256"]):
+                text = None
+            if field == "remediation" and entry.get("remediationTranslationKind") == "generic-device-redirect":
+                text = translate_generic_remediation(c["remediationOriginal"])
             if isinstance(text, str) and text.strip():
                 c[field] = modernise_terms(text.strip())
                 used = True
+                if field == "remediation":
+                    kind = entry.get("remediationTranslationKind", "")
+                    c["remediationCoverage"] = ("generic" if kind == "generic-device-redirect"
+                                                else "unavailable" if kind == "source-unavailable"
+                                                else "adapted" if kind == "Turkish source-guidance adaptation"
+                                                else "translated")
+        if c["remediationCoverage"] == "missing":
+            generic = translate_generic_remediation(c["remediationOriginal"])
+            if generic:
+                c["remediation"] = generic
+                c["remediationCoverage"] = "generic"
+                used = True
+            elif c["remediationOriginal"]:
+                c["remediation"] = "Güncel uygulama adımları için ilgili Microsoft Secure Score önerisini açın."
+            else:
+                c["remediationCoverage"] = "unavailable"
+        if c["remediationCoverage"] == "unavailable":
+            c["remediation"] = "Microsoft bu öneri için uygulama adımı sağlamamıştır."
+        impact = c.get("remediationImpact", "")
+        if impact.lower() in ("none", "unknown"):
+            c["remediationImpact"] = {"none": "Yok", "unknown": "Bilinmiyor"}[impact.lower()]
+        elif (impact and impact == c["remediationImpactOriginal"]
+              and not entry.get("remediationImpact")):
+            c["remediationImpact"] = "Etki metninin Türkçe çevirisi henüz doğrulanmadı."
         # Findings-report fields. Optional: a control without them still renders
         # a card from Graph data alone, it is just shorter.
         for field in ("aciklama", "etkisi", "bagimlilik", "dogrulama"):
@@ -1484,6 +1596,7 @@ def analyse(latest: Dict[str, Any], previous: Optional[Dict[str, Any]],
             "threats": prof.get("threats") or [],
             "note": " · ".join([p for p in note_parts if p]),
             "remediation": modernise_terms(_strip_html(prof.get("remediation") or "")),
+            "remediationSourceSha256": hashlib.sha256(str(prof.get("remediation") or "").encode()).hexdigest(),
             "remediationImpact": modernise_terms(
                 _strip_html(prof.get("remediationImpact") or "")),
             "actionUrl": prof.get("actionUrl") or "",
@@ -1505,6 +1618,10 @@ def analyse(latest: Dict[str, Any], previous: Optional[Dict[str, Any]],
     translated = 0
     if lang == "tr":
         translated = apply_translations(controls, load_translation_pack())
+        options_pack = load_remediation_options()
+        for control in controls:
+            candidate = options_pack.get(control["id"].lower(), {})
+            control["remediationOptions"] = candidate if reviewed_options_match(control, candidate) else {}
 
     controls.sort(key=lambda c: (-c["severityValue"], -c["gap"], str(c["title"])))
 
@@ -1569,6 +1686,10 @@ def analyse(latest: Dict[str, Any], previous: Optional[Dict[str, Any]],
         "comparativeScores": latest.get("averageComparativeScores") or [],
         "applicableCount": len(controls),
         "translatedCount": translated,
+        "remediationCoverageCounts": {
+            key: sum(c.get("remediationCoverage") == key for c in controls)
+            for key in ("translated", "adapted", "generic", "missing", "unavailable")
+        } if lang == "tr" else {},
         "notApplicableCount": len(not_applicable),
         "notApplicable": not_applicable,
         "catalogueMax": catalogue_max,
@@ -1704,6 +1825,9 @@ def build_html(res: Dict[str, Any], tenant: Dict[str, Any],
     no_lbl = jsq(t["no"])
     generated = dt.datetime.now().strftime("%d.%m.%Y %H:%M" if lang == "tr" else "%Y-%m-%d %H:%M")
     customer = str(tenant.get("customerName") or tenant.get("displayName") or t["tenant"])
+    reviewed_count = len(load_remediation_options())
+    guidance_method = t["guidance_method"].format(
+        reviewed=reviewed_count, missing=max(0, 184 - reviewed_count))
 
     controls = res["controls"]
     open_c = res["openControls"]
@@ -1719,7 +1843,9 @@ def build_html(res: Dict[str, Any], tenant: Dict[str, Any],
     RISK_BIG = SEV_DISPLAY[rk]
     risk_text = RISK_LABEL[rk][lang]
     imp = lambda v: t["impact_" + str(v or "").lower()] if str(v or "").lower() in (
-        "low", "moderate", "high") else (t["impact_moderate"] if str(v or "").lower() == "medium" else "—")
+        "low", "moderate", "high") else (t["impact_moderate"] if str(v or "").lower() == "medium"
+        else {"none": "Yok" if lang == "tr" else "None",
+              "unknown": "Bilinmiyor" if lang == "tr" else "Unknown"}.get(str(v or "").lower(), "—"))
 
     # ------------------------------------------------------------------ #
     # Small components
@@ -1740,6 +1866,53 @@ def build_html(res: Dict[str, Any], tenant: Dict[str, Any],
                 f'border-color:{ST_BDR[k]}"><i style="background:{ST_SOLID[k]}"></i>'
                 f'{e(t[k])}</span>')
 
+    def guidance(c: Dict[str, Any]) -> str:
+        """Shared, escaped How-to content for actions and findings."""
+        result = ""
+        if c.get("remediation") and c.get("remediationCoverage") not in ("missing", "unavailable"):
+            result += f'<h6 class="guidance-subheading">{e(t["fnd_config"])}</h6>'
+        result += f'<p>{e(str(c.get("remediation") or t["no_remediation"]))}</p>'
+        options = c.get("remediationOptions") or {}
+        if lang == "tr" and reviewed_options_match(c, options) and options.get("options"):
+            result += ('<section class="reviewed-options">'
+                       '<h5 class="remediation-heading">İyileştirme Seçenekleri</h5>')
+            sources: Dict[str, str] = {}
+            for option in options["options"]:
+                if not isinstance(option, dict):
+                    continue
+                result += f'<h6>{e(str(option.get("label") or option.get("title") or "Yöntem"))}</h6>'
+                steps = option.get("steps", [])
+                if isinstance(steps, list):
+                    result += '<ol>' + ''.join(f'<li>{e(str(step))}</li>' for step in steps) + '</ol>'
+                applicability = option.get("displayApplicability", option.get("applicability"))
+                if applicability:
+                    result += f'<p><b>{e(t["fnd_dep"])}:</b> {e(str(applicability))}</p>'
+                for key, label in (("verification", t["fnd_verify"]), ("warning", "Uyarı")):
+                    if option.get(key):
+                        result += f'<p><b>{e(label)}:</b> {e(str(option[key]))}</p>'
+                for url in option.get("sourceUrls") or []:
+                    if isinstance(url, str) and url.lower().startswith("https://"):
+                        sources.setdefault(url, document_link_label(url))
+            for key, label in (("changeCaveat", "Uygulama notu"),
+                               ("verification", t["fnd_verify"]), ("warning", "Uyarı")):
+                if options.get(key):
+                    result += f'<p><b>{e(label)}:</b> {e(str(options[key]))}</p>'
+            for source in options.get("sources") or []:
+                if isinstance(source, dict):
+                    url = str(source.get("url") or "")
+                    if url.lower().startswith("https://"):
+                        sources[url] = str(source.get("title") or document_link_label(url))
+            if sources:
+                result += '<ul class="guidance-sources">' + "".join(
+                    f'<li><a href="{e(url)}" target="_blank" rel="noopener noreferrer">{e(label)}</a></li>'
+                    for url, label in sources.items()) + '</ul>'
+            result += '</section>'
+        for field, label in (("bagimlilik", t["fnd_dep"]), ("dogrulama", t["fnd_verify"])):
+            if c.get(field):
+                result += (f'<h6 class="guidance-subheading">{e(label)}</h6>'
+                           f'<p>{e(str(c[field]))}</p>')
+        return result
+
     def action_row(c: Dict[str, Any]) -> str:
         flags = ""
         if c["regressed"]:
@@ -1753,16 +1926,18 @@ def build_html(res: Dict[str, Any], tenant: Dict[str, Any],
         threats = ", ".join(
             t.get("threat_" + str(x).strip().lower().replace(" ", "_"), str(x))
             for x in c["threats"][:4]) or "—"
-        steps = c["remediation"] or t["no_remediation"]
         # Scheme allow-list: the action URL comes from Microsoft's control profiles,
         # but a report must never be able to carry a javascript:/data: link.
         safe_url = str(c["actionUrl"] or "")
         if not safe_url.lower().startswith(("https://", "http://")):
             safe_url = ""
+        if not safe_url and lang == "tr" and c.get("remediationCoverage") == "missing":
+            safe_url = "https://security.microsoft.com/securescore"
         link = (f'<a class="dl" href="{e(safe_url)}" target="_blank" rel="noopener noreferrer">'
                 f'{e(t["open_portal"])} ↗</a>' if safe_url else "")
-        impact_line = (f'<p class="dimp"><b>{e(t["col_effect"])}:</b> '
-                       f'{e(c["remediationImpact"])}</p>' if c.get("remediationImpact") else "")
+        impact = c.get("remediationImpact") or ""
+        impact_line = (f'<p class="dimp"><b>{e(t["col_effect"])}:</b> {e(impact)}</p>'
+                       if impact and not (lang == "tr" and impact.startswith("Etki metninin Türkçe")) else "")
         note_line = (f'<p class="dnote"><b>{e(t["col_note"])}:</b> {e(c["note"])}</p>'
                      if c.get("note") else "")
         blob = e(f'{c["title"]} {c.get("titleTr","")} {c["id"]} {c["category"]} '
@@ -1813,7 +1988,7 @@ def build_html(res: Dict[str, Any], tenant: Dict[str, Any],
       <dt>{e(t['col_cost'])}</dt><dd>{e(imp(c['implementationCost']))}</dd>
       <dt>{e(t['threats'])}</dt><dd>{e(threats)}</dd>
     </dl></div>
-    <div class="dbox grow"><h5>{e(t['implementation'])}</h5><p>{e(steps)}</p>
+    <div class="dbox grow"><h5>{e(t['implementation'])}</h5>{guidance(c)}
       {impact_line}{note_line}{link}</div>
     {assign_box}
   </div></td></tr>
@@ -2216,8 +2391,10 @@ def build_html(res: Dict[str, Any], tenant: Dict[str, Any],
         url_f = str(c["actionUrl"] or "")
         if not url_f.lower().startswith(("https://", "http://")):
             url_f = ""
+        if not url_f and lang == "tr" and c.get("remediationCoverage") == "missing":
+            url_f = "https://security.microsoft.com/securescore"
         link_f = (f'<a href="{e(url_f)}" target="_blank" rel="noopener noreferrer">'
-                  f'{e(t["fnd_link"])} ↗</a>' if url_f else "—")
+                  f'{e(t["open_portal"])} ↗</a>' if url_f else "—")
 
         def _row(label: str, body: str) -> str:
             return f"<tr><th>{e(label)}</th><td>{body}</td></tr>"
@@ -2228,13 +2405,7 @@ def build_html(res: Dict[str, Any], tenant: Dict[str, Any],
         if c.get("etkisi"):
             desc_rows += _row(t["fnd_impact"], e(str(c["etkisi"])))
 
-        fix = f'<p><b>{e(t["fnd_config"])}:</b> {e(c["remediation"] or t["no_remediation"])}</p>'
-        if c.get("bagimlilik"):
-            fix += f'<p><b>{e(t["fnd_dep"])}:</b> {e(str(c["bagimlilik"]))}</p>'
-        if c.get("dogrulama"):
-            fix += f'<p><b>{e(t["fnd_verify"])}:</b> {e(str(c["dogrulama"]))}</p>'
-        if not (c.get("aciklama") or c.get("etkisi")):
-            fix += f'<p class="fn-gap">{e(t["fnd_nopack"])}</p>'
+        fix = guidance(c)
 
         fnd_cards += f"""
   <article class="bulgu" id="bulgu-{n}">
@@ -2287,6 +2458,7 @@ def build_html(res: Dict[str, Any], tenant: Dict[str, Any],
 
     <h3 class="fi-h">{e(t['fnd_purpose'])}</h3>
     <p class="fi-p">{t['fnd_purpose_b']}</p>
+    <p class="fi-scope">{e(t['fnd_scope_note'])}</p>
 
     <h3 class="fi-h">{e(t['fnd_posture'])}</h3>
     <p class="fi-p">{e(t['fnd_posture_b'])}</p>
@@ -2644,20 +2816,29 @@ tbody:last-child td{{border-bottom:none}}
 .b-n{{font-weight:800;opacity:.82;margin-right:8px}}
 .b-sev{{padding:7px 16px;font-size:13.5px;font-weight:800;letter-spacing:.01em}}
 .b-t{{width:100%;border-collapse:collapse}}
-.b-t th{{width:176px;text-align:left;vertical-align:top;padding:12px 16px;
- background:var(--pan2);border-bottom:1px solid var(--bd);border-right:1px solid var(--bd);
+.bulgu .b-t th{{width:176px;text-align:left;vertical-align:top;padding:12px 16px;
+ background:#fff;border:1px solid #A9B3BF;
  font-size:13.5px;font-weight:750;color:var(--tx)}}
-.b-t td{{padding:12px 16px;border-bottom:1px solid var(--bd);font-size:14px;
+.bulgu .b-t td{{padding:12px 16px;background:#fff;border:1px solid #A9B3BF;font-size:14px;
  vertical-align:top;line-height:1.62}}
-.b-t tr:last-child th,.b-t tr:last-child td{{border-bottom:0}}
+.reviewed-options .remediation-heading{{font-size:16px;font-weight:800;line-height:1.4;
+ text-transform:none;letter-spacing:normal;color:{BLUE_T};background:{BLUE_TINT};
+ border-left:3px solid {BLUE};padding:9px 12px;margin:16px 0 12px}}
+.reviewed-options h6{{font-size:15px;font-weight:750;margin:14px 0 6px}}
+.guidance-subheading{{font-size:14px;font-weight:750;letter-spacing:normal;
+ text-transform:none;margin:14px 0 6px;color:var(--tx)}}
+.guidance-subheading:first-child{{margin-top:0}}
+.reviewed-options ol,.reviewed-options ul{{padding-left:24px;margin:8px 0}}
+.reviewed-options{{overflow-wrap:anywhere}}
+.guidance-sources{{font-size:12.5px;line-height:1.6}}
 .b-t p{{margin:0 0 9px}} .b-t p:last-child{{margin-bottom:0}}
 .b-m{{color:var(--dim);font-size:12.5px}}
-.fn-gap{{color:var(--dim);font-size:12.5px;font-style:italic}}
 /* ---- Findings front matter ---- */
 .fnd-intro{{margin-bottom:22px}}
 .fi-h{{margin:22px 0 8px;font-size:16px;font-weight:800;color:{SEV_TEXT['kritik']}}}
 .fi-h:first-child{{margin-top:0}}
 .fi-p{{margin:0;font-size:14.5px;line-height:1.68;color:var(--tx);max-width:104ch}}
+.fi-scope{{margin:12px 0 0;font-size:13.5px;line-height:1.65;color:var(--mut)}}
 .rptbl{{margin-top:15px;border:1px solid var(--bd2);border-radius:10px;overflow:hidden}}
 .rp-r{{display:flex;align-items:stretch;border-bottom:1px solid var(--bd)}}
 .rp-r:last-child{{border-bottom:0}}
@@ -2681,7 +2862,10 @@ tbody:last-child td{{border-bottom:none}}
  .b-t,.b-t tbody,.b-t tr,.b-t th,.b-t td{{display:block;width:auto}}
  .b-t th{{border-right:0;border-bottom:0;padding-bottom:2px}}
 }}
-@media print{{ .bulgu{{border-color:#bbb;box-shadow:none}} }}
+@media print{{
+ .bulgu{{border-color:#A9B3BF;box-shadow:none}}
+ .bulgu .b-t th,.bulgu .b-t td{{background:#fff!important;border:1px solid #A9B3BF!important}}
+}}
 .pnote{{margin:14px 0 0;font-size:12.2px;color:var(--dim);line-height:1.6}}
 /* ---- Owner / due-date assignment ---- */
 .dbox.asg{{min-width:230px}}
@@ -2842,7 +3026,7 @@ footer{{padding:24px 0 0;color:var(--dim);font-size:11.5px;text-align:center}}
  body{{background:#fff;color:#000}} header{{background:#fff}}
  /* Keep colour fills and their ink - otherwise the risk-posture numerals and
     card headers print as black on white and lose their meaning. */
- .b-h,.b-sev,.rp-c,.rp-n,.rp-l,.riskpill,.cv-pill,.sg span,.sevcard .sc-bar{{
+ .b-h,.b-sev,.rp-c,.rp-n,.rp-l,.riskpill,.cv-pill,.sg span,.sevcard .sc-bar,.remediation-heading{{
   -webkit-print-color-adjust:exact;print-color-adjust:exact}}
  .rp-c *{{color:inherit}}
  .sec{{display:block!important;break-after:page}}
@@ -3167,7 +3351,7 @@ footer{{padding:24px 0 0;color:var(--dim);font-size:11.5px;text-align:center}}
     <div class="p-b method"><ul>
       <li>{e(t['m1'])}</li><li>{e(t['m2'])}</li><li>{e(t['m3'])}</li>
       <li>{e(t['m4'])}</li><li>{e(t['m5'])}</li><li>{e(t['m6'])}</li>
-    </ul></div></div>
+    </ul><p class="guidance-method-note">{e(guidance_method)}</p></div></div>
 </section>
 
 <section id="s-ilerleme" class="sec">
@@ -3864,14 +4048,14 @@ def run_self_test() -> int:
     checks.append(("Findings report renders one card per open action",
                    _pg.count('<article class="bulgu"') == _open_n,
                    f'{_pg.count(chr(60) + "article class=" + chr(34) + "bulgu" + chr(34))} vs {_open_n}'))
-    # Count inside the findings section only - the same labels appear in the
-    # per-action detail panels of section 2, which would inflate a global count.
-    _fs = _pg.split('id="s-bulgu"', 1)[-1].split("</section>", 1)[0]
-    checks.append(("Every finding card carries steps, rank and points",
-                   _fs.count("Yapılandırma:") == _open_n
-                   and _fs.count("Microsoft öncelik sırası") == _open_n,
-                   f'steps {_fs.count("Yapılandırma:")}, rank '
-                   f'{_fs.count("Microsoft öncelik sırası")}, cards {_open_n}'))
+    _finding_cards = re.findall(r'<article class="bulgu".*?</article>', _pg, re.S)
+    _guidance_n = sum(bool(re.search(
+        r'İyileştirme Değişikliği</th><td>(?:<h6[^>]*>.*?</h6>)?<p>.+?</p>', card, re.S))
+        and "Microsoft öncelik sırası" in card and '<b class="mono">' in card
+        for card in _finding_cards)
+    checks.append(("Every finding card carries guidance, rank and points",
+                   _guidance_n == _open_n,
+                   f'guidance/rank/points {_guidance_n}, cards {_open_n}'))
     _fi = _pg.split('class="panel fnd-intro"', 1)[-1].split("</article>", 1)[0]
     _res_tr = analyse(history[0], history[1], profiles, "tr")
     _sev_open = {k: sum(1 for c in _res_tr["openControls"] if c["severity"] == k)
@@ -4168,11 +4352,12 @@ def main(argv: List[str]) -> int:
         print(f"  Geriye giden      : {r['regressedCount']}")
     print(f"  Kazanılabilir puan: {r['totalGap']:.0f}")
     if langs[0] == "tr":
-        tc = r.get("translatedCount", 0)
-        if tc:
-            print(f"  Türkçe içerik     : {tc}/{r['applicableCount']} işlem çevrildi")
-        else:
-            print("  Türkçe içerik     : paket bulunamadı, işlem metinleri İngilizce gösteriliyor")
+        coverage = {key: sum(c.get("remediationCoverage") == key for c in r["controls"])
+                    for key in ("translated", "adapted", "generic", "missing", "unavailable")}
+        print(f"  Türkçe How-to     : {coverage['translated']} çeviri, "
+              f"{coverage['adapted']} kaynak uyarlaması, "
+              f"{coverage['generic']} portal yönlendirmesi, "
+              f"{coverage['missing']} eksik, {coverage['unavailable']} kaynak yok")
     if not r["reconciles"]:
         print(f"  ! Katalog toplamı ({r['catalogueMax']:.0f}) tenant max ({r['maxScore']:.0f}) "
               f"ile birebir örtüşmüyor; başlık değerleri tenant verisinden alınmıştır.")

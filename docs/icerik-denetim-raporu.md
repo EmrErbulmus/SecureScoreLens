@@ -1,5 +1,9 @@
 # Teknik Doğruluk Denetim Raporu — `bulgu_icerik.json`
 
+> Tarihsel rapor: aşağıdaki 52 kontrol/208 metin incelemesi v3.2.0'ın 460 profillik
+> How-to paketinin tamamı için kaynak veya tenant doğrulama garantisi değildir.
+> Güncel çeviri ve Remediation options sınırları README'deki v3.2.0 kapsam bölümündedir.
+
 **Karar:** 52 kontrolün tamamı (4 alan × 52 = 208 metin bloğu) denetlendi; **1 düzeltilmesi gereken hata**, **3 doğrulanması gereken şüpheli ifade** bulundu. Lisans iddiaları, ürün adları ve kontrol/başlık eşleşmeleri genel olarak doğrudur.
 
 ---

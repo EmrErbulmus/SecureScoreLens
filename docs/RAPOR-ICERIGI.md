@@ -87,3 +87,17 @@ modeline izin verir — **yeter ki raporda tanımlansın.** Bu araç tanımlar.
 
 Ham veri dosyası `--offline-input` ile yeniden analiz edilebilir; bu, tenant'a
 tekrar bağlanmadan rapor tasarımını yenilemeyi sağlar.
+> v3.2.2: How-to ile başlık çevirisi farklı kapsamlardır. 460 mevcut profil için Türkçe
+> yönerge/yönlendirme veya açık kaynak-yok uyarısı; 120 yardımcı başlık çevirisi vardır.
+> 185 yeni yönerge kaynak uyarlamasıdır, canlı tenant portal doğrulaması değildir.
+> Ayrıntılı kaynak incelemeli katalog 33/184 cihaz kontrolünü (%17,93), 41 seçeneği
+> ve 30 Microsoft Learn kaynağını kapsar; 151 kontrolde ayrıntılı seçenek eksiktir.
+> scid_87 için GPO/güncel Intune/registry seçenekleri bulunur. Eksik yöntemler
+> uydurulmaz; özgün Microsoft metni yalnızca denetim metadata/JSON'unda korunur.
+> HTML/PDF görünümünde İngilizce özgün metin/etki kutuları yoktur. İyileştirme
+> Seçenekleri yalnızca başlığı eşleşen gerçek cihaz portal yönlendirmelerinde gösterilir;
+> diğer kontroller normal Secure Score yönergesini gereksiz seçenek uyarısı olmadan sunar.
+> Çeviri/kaynak/kapsam açıklamaları ve inceleme tarihleri her kartta yinelenmez;
+> Yöntem ve Kapsam bölümünde bir kez açıklanır. Findings-only PDF için girişte kısa
+> uygulama-kapsam notu vardır. Seçenekler 16 px kalın, normal harf düzenli mavi başlık
+> altında; ortam bağımlılığı, teknik uyarı, doğrulama ve okunabilir belge bağlantılarıyla sunulur.

@@ -4,7 +4,7 @@
 
 Dağıtım için en uygun yoldur. Sisteme hiçbir şey kurulmaz.
 
-1. [Releases](../../../releases) sayfasından son sürüm ZIP'ini indirin.
+1. [Releases](https://github.com/EmrErbulmus/SecureScoreLens/releases) sayfasından son sürüm ZIP'ini indirin.
 2. ZIP'e sağ tıklayın → **Tümünü ayıkla**.
 3. Ayıklanan klasördeki **`BASLAT.cmd`** dosyasına çift tıklayın.
 
@@ -19,7 +19,7 @@ Betik sırasıyla şunları yapar:
 ## Yol 2 — Depodan çalıştırma
 
 ```powershell
-git clone https://github.com/<kullanici>/SecureScoreLens.git
+git clone https://github.com/EmrErbulmus/SecureScoreLens.git
 cd SecureScoreLens
 Import-Module .\module\SecureScoreLens\SecureScoreLens.psd1 -Force
 Invoke-SecureScoreLens
