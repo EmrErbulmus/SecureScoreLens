@@ -19,58 +19,6 @@ dönüştürür. Tenant üzerinde hiçbir değişiklik yapmaz, hiçbir kimlik bi
 
 ---
 
-## v3.2.2 — profesyonel bulgu ve iyileştirme görünümü
-
-İngilizce kontrol başlıkları ve ürün/UI adları korunur; uygulama açıklamaları Türkçedir.
-Paket, mevcut 460 Microsoft profilinin tamamını kapsar: 90 önceki ayrıntılı çeviri,
-185 kaynak yönergesi uyarlaması, 184 cihaz portal yönlendirmesi ve Microsoft'un adım
-sağlamadığı 1 profil için açık uyarı. **Başlık çevirileri yalnızca 120 kontroldedir**;
-bu sayı How-to veya ayrıntılı bulgu kapsamı değildir.
-
-Kaynak uyarlaması, tüm adımların güncel tenant arayüzünde doğrulandığı anlamına gelmez.
-Çelişkili kaynak eşikleri ve eksik yönergeler uyarıyla gösterilir. Özgün İngilizce
-Microsoft metni denetim metadata/JSON'unda korunur; HTML, PDF ve görünüm dışa
-aktarımlarında ek kaynak/etki kutusu olarak gösterilmez. Gelecekteki bilinmeyen
-cihaz kontrollerinde yalnızca dar biçimde tanınan portal yönlendirmesi çevrilir.
-Diğer yeni/değişen metinler sessizce Türkçe sayılmaz: güncel uygulama adımları için
-ilgili Secure Score önerisinin portal bağlantısına yönlendirilir. Microsoft'un adım
-sağlamadığı öneriler açıkça belirtilir; yapılacak işlem uydurulmaz.
-
-Kaynak incelemeli katalog **184 cihaz kontrolünden 33'ünü (%17,93)**, **41 seçeneği**
-ve **30 Microsoft Learn kaynağını** kapsar; **151 cihaz kontrolünde ayrıntılı seçenek
-eksiktir**. `scid_87` için GPO, güncel Intune Settings catalog ve exact registry
-seçenekleri aynı How-to içeriğiyle işlem satırında ve Bulgu Raporu'nda gösterilir.
-Sensor yönergeleri koşullu teşhis/onboarding adımlarıdır; garantili onarım değildir.
-Diğer kontrollerde tüm Remediation options yöntemleri varmış gibi davranılmaz.
-**İyileştirme Seçenekleri** yalnızca cihaz kategorisinde, katalogdaki kontrol ID/başlığı
-eşleşen ve Microsoft metni gerçekten portal seçeneklerine yönlendiren kontrollerde
-gösterilir. Normal Secure Score önerilerinde mevcut Türkçe öneri korunur; gereksiz
-eksik GPO/Intune/registry açıklaması eklenmez.
-Kartlarda tekrarlanan çeviri/kaynak/kapsam metinleri ve inceleme tarihleri gösterilmez;
-sınırlar bir kez **Yöntem ve Kapsam** notunda açıklanır. Bulguların girişinde, Findings-only
-PDF'de de yer alan kısa uygulama-kapsam açıklaması bulunur. İyileştirme Seçenekleri
-başlığı okunaklı 16 px, kalın ve mavi vurgulu normal büyük/küçük harf düzenindedir.
-Maddi lisans/OS/iş kesintisi bağımlılıkları, güvenli hedefleme ve doğrulama adımları
-korunur. Belge bağlantıları uzun URL metinleri yerine okunabilir etiketlerle sunulur.
-Kaynak tarihleri, özgün applicability/notes alanları ve audit metadata dosyalarda kalır;
-özet display alanları yeni kaynak doğrulaması veya tenant testi iddiası değildir.
-Bu paket **yerel, küratörlü
-içeriktir; canlı tenant API verisi değildir**. Recommendation API yalnızca
-`remediationType` gibi alanlar sunar; tam portal adımlarını sağlamaz. Ek izin,
-portal scraping veya otomatik düzeltme eklenmemiştir.
-
-Ayrıntılı sınırlar ve kontrol bazlı kaynaklar:
-[Remediation options kapsam raporu](docs/remediation-coverage-v3.2.md).
-
-Bulgu tablosu ekran ve yazdırma/PDF görünümünde beyaz hücreler ve ince belirgin
-kenarlıklar kullanır. PDF, tarayıcının yazdırma özelliğiyle oluşturulur.
-
-Doğrulama: `python src/secure_score_assessment.py --self-test` ve
-`python -m unittest discover -s tests -v`. Windows oturum açma ve gerçek tenant
-üzerinde uçtan uca uygulama testi bu sürümün Linux doğrulamasına dahil değildir.
-
----
-
 ## Bu araç ne işe yarar?
 
 Microsoft Secure Score portalı size bir puan ve uzun bir öneri listesi verir. Bu listeyi
