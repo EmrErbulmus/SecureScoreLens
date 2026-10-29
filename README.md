@@ -6,7 +6,6 @@
 [![Python 3.8+](https://img.shields.io/badge/Python-3.8%2B-3776AB)](https://www.python.org/)
 [![Salt okunur](https://img.shields.io/badge/eri%C5%9Fim-salt%20okunur-00A14B)](#güvenlik)
 [![Lisans: MIT](https://img.shields.io/badge/lisans-MIT-blue)](LICENSE)
-[![Önizleme 3.2.3](https://img.shields.io/badge/sürüm-3.2.3--orange)](release-notes.md)
 
 Tenant'ınıza salt-okunur bağlanır, API'nin erişilebilir Secure Score puanlarını ve iyileştirme profillerini okur; sonucu **tek dosyalık, çevrimdışı açılan, Türkçe** bir HTML rapora dönüştürür. Tenant ayarlarını değiştirmez. Varsayılan etkileşimli akışta parola yalnız Microsoft ekranına girilir; erişim token'ı süreç belleğinde tutulur, kalıcı olarak kaydedilmez.
 
