@@ -10,7 +10,9 @@
 
 Tenant'ınıza salt-okunur bağlanır, API'nin erişilebilir Secure Score puanlarını ve iyileştirme profillerini okur; sonucu **tek dosyalık, çevrimdışı açılan, Türkçe** bir HTML rapora dönüştürür. Tenant ayarlarını değiştirmez. Varsayılan etkileşimli akışta parola yalnız Microsoft ekranına girilir; erişim token'ı süreç belleğinde tutulur, kalıcı olarak kaydedilmez.
 
-**3.2.3 bir önizleme sürümüdür.** Sentetik demo ve kaynak bağlantılı iyileştirme kataloğu içerir; üretim, tüm içerik, teknik koruma veya Secure Score kazanımı için doğruluk garantisi değildir. Microsoft puanları/durumları ile aracın etki önceliklendirme modeli ayrı kavramlardır.
+**3.2.3** Sentetik demo ve kaynak bağlantılı iyileştirme kataloğu içerir; üretim, tüm içerik, teknik koruma veya Secure Score kazanımı için doğruluk garantisi değildir. Microsoft puanları/durumları ile aracın etki önceliklendirme modeli ayrı kavramlardır.
+
+<img width="1280" height="637" alt="banner" src="https://github.com/user-attachments/assets/629bfac4-7a38-451f-b6f9-c412577e50ce" />
 
 ---
 
