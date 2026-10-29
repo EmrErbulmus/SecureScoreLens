@@ -167,7 +167,7 @@ Açık maddeler için danışmanlık raporu biçiminde bulgu kartları:
 
 Başta yönetici özeti, raporun amacı ve renk kodlu risk duruşu tablosu yer alır. **PDF olarak indir** düğmesi bu bölümü tarayıcının yazdırma/PDF akışına yönlendirir. Fiziksel baskı, manuel PDF sayfa kırılmaları ve tüm tarayıcı etkileşimleri bu sürüm için taze olarak doğrulanmadı.
 
-<img width="1014" height="1253" alt="image" src="https://github.com/user-attachments/assets/5a391124-5378-4b1b-a8fd-dde54529665e" />
+<img width="1117" height="806" alt="image" src="https://github.com/user-attachments/assets/0e7d4145-881e-4781-926f-adc2b631e2b8" />
 
 ---
 
