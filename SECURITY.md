@@ -1,44 +1,11 @@
-# Güvenlik Politikası
+# Güvenlik ve veri koruma
 
-## Güvenlik açığı bildirimi
+Bu önizleme salt-okunur değerlendirme içindir; güvenlik sertifikası, tenant doğrulaması veya sır içermediğine dair mutlak garanti değildir. Kaynağı inceleyin; yalnız yetkili olduğunuz tenant'ta kullanın.
 
-Bir güvenlik açığı bulduysanız **herkese açık issue açmayın.**
+- Token süreç belleğindedir; uygulama kimlik doğrulaması/izinleri bu paketle genişletilmedi. Kamuya açık Microsoft istemci kimliği sır değildir.
+- Yerel rapor/ham JSON/CSV/XLSX, kullanıcı atamaları, kurum/alan adı, tenant kimliği, tarayıcı localStorage verisi ve ekran görüntüleri hassas olabilir. Yerel dosya ve tarayıcı profilini koruyun; paylaşımlı cihaz kullanmayın.
+- `.gitignore` ve örnek sentetik dosyalar gerçek veriyi otomatik olarak anonimleştirmez. Commit ve GitHub upload öncesi içerik, dosya adları ve gömülü/base64 verileri yeniden inceleyin.
+- Gerçek token, secret, sertifika özel anahtarı, `.env`, cache veya tenant çıktısını issue/PR içine koymayın. Sızıntı şüphesinde erişimi kesin, ilgili kimlik bilgisini iptal/rotate edin ve kuruluşunuzun sürecini izleyin. Git geçmişinden silmek tek başına iptal değildir.
+- GitHub'da Security > Advisories > Report a vulnerability mevcut ve etkinse özel bildirim kullanın; değilse depo sahibinin kurumsal özel bildirim kanalını belirleyin. Hassas ayrıntıyla public issue açmayın. Bu pakette yeni bir e-posta adresi veya yanıt süresi taahhüdü tanımlanmaz.
 
-Bildirimlerinizi depo sahibine özel olarak iletin (GitHub → Security → *Report a
-vulnerability*, veya depo açıklamasındaki iletişim adresi). Bildiriminizde şunlar
-yer alırsa değerlendirme hızlanır:
-
-- Etkilenen dosya ve sürüm
-- Yeniden üretme adımları
-- Gözlenen ve beklenen davranış
-- Varsa etkisi hakkındaki değerlendirmeniz
-
-Makul bir sürede dönüş yapılır ve düzeltme yayımlanana kadar bildirim gizli tutulur.
-
-## Aracın güvenlik tasarımı
-
-Bu araç, çalıştığı tenant üzerinde **hiçbir değişiklik yapamaz.**
-
-| Önlem | Uygulama |
-|---|---|
-| Salt okunur erişim | Tüm Microsoft Graph çağrıları `GET`. Tek `POST`, Microsoft'un token uç noktasına |
-| İstenen yetkiler | `SecurityEvents.Read.All` (zorunlu), `Organization.Read.All` (opsiyonel). İkisi de salt okunur |
-| Kimlik doğrulama | Authorization Code + PKCE (S256). Parola araca girilmez |
-| Belirteç saklama | **Yok.** Bellekte tutulur, diske yazılmaz, çalıştırma sonunda temizlenir |
-| Onay | Her çalıştırmada yeniden istenir; sessiz yeniden kullanım yoktur |
-| Geri dönüş dinleyicisi | Yalnızca loopback'e bağlanır, `state` doğrulanır, okuma boyutu sınırlıdır |
-| Hata mesajları | Sabit metinlerle eşlenir; dış girdi yansıtılmaz |
-| Üretilen rapor | Tek dosya, dış kaynak çağırmaz, bağlantılar `http(s)` ile sınırlı |
-| Logo gömme | Tür ve boyut (≤2 MB) doğrulanır |
-| Marka rengi | Yalnızca literal hex kabul edilir; başka değer yok sayılır |
-
-## Raporun içerdiği veri
-
-Üretilen rapor **tenant'ınıza ait güvenlik yapılandırma bilgisi** taşır. Kurum içi
-sınıflandırmanıza göre saklayın ve paylaşın. Depoya rapor dosyası eklemeyin —
-`.gitignore` bunu engeller.
-
-## Desteklenen sürümler
-
-En son yayımlanan sürüm desteklenir. Güvenlik düzeltmeleri yeni bir yama sürümü
-olarak yayımlanır.
+Desteklenen inceleme hedefi bu preview paketidir. Windows login/tenant/API/gerçek printer doğrulanmadı; 460 envanter kaydının tüm içerikleri teknik olarak doğrulanmış değildir. Known limits: `release-notes.md`. Yayın öncesi kontroller heuristiktir, kapsamlı güvenlik denetimi değildir.

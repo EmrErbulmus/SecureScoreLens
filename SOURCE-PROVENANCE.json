@@ -1,0 +1,36 @@
+{
+  "releaseVersion": "3.2.3-preview.1",
+  "sourceTag": "accepted-v3.2.2-Secenekler-TR-ONIZLEME",
+  "sourceArchive": "SecureScoreLens-v3.2.2-Secenekler-TR-ONIZLEME.zip",
+  "sourceArchiveSha256": "1b9378eac0dc5e2770c400245d70980bf2a073642fa46179e7692ccef5dc907e",
+  "acceptedStandaloneHtml": "SecureScoreLens-Secenekler-TR-ONIZLEME.html",
+  "acceptedStandaloneHtmlSha256": "98951da14e891cb366186994d334e06bf09cf5024cc21da0f43285f7c68ee2a0",
+  "originalBaselineSha256": "cc38ca274583ac54481d4627bf6903d431da029b23c53434e9da942a8f3c0b9d",
+  "baselineImmutable": true,
+  "psModuleVersion": "3.2.3",
+  "psDataPrerelease": "preview1",
+  "versionNote": "PowerShellGet alphanumeric prerelease label; GitHub/engine use 3.2.3-preview.1",
+  "runtimeChanges": [
+    "Engine header and User-Agent version only",
+    "PowerShell manifest version/prerelease/release notes only",
+    "PowerShell comment example synthetic customer only"
+  ],
+  "currentCoverage": {
+    "catalogue": 460,
+    "genericRedirectDevice": 184,
+    "existingOptionsPreserved": 33,
+    "existingAlternativesPreserved": 41,
+    "newDetailedDevice": 87,
+    "detailedDeviceTotal": 120,
+    "alternativesTotal": 134,
+    "pendingDevice": 64,
+    "translationEntriesMatched": 460,
+    "detailedHowToTranslated": 275,
+    "genericRedirectsTranslated": 184,
+    "sourceInstructionsMissing": 1,
+    "impactTranslationsMatched": 460,
+    "portalVerified": 0
+  },
+  "portalVerifiedCount": 0,
+  "publicationScope": "Packaging/docs/tests/version coherence only; no GitHub push or deployment"
+}

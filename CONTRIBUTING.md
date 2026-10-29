@@ -1,73 +1,26 @@
-# Katkı Rehberi
+# Katkıda bulunma
 
-Katkılar memnuniyetle karşılanır. En değerli katkı türü, içerik paketindeki
-**teknik doğruluk düzeltmeleridir.**
+Değişiklikleri küçük ve kaynak/kanıt sınırları açık tutun. Tenant puanlarını, auth kapsamını, paleti veya onaylı seçenekleri istenmeden değiştirmeyin. Kamuya açık Microsoft kaynaklarını URL ve kontrol ID'siyle belirtin; portalın bütün seçenekleri doğrulanmış gibi yazmayın.
 
-## Önce bunu okuyun: doğruluk kuralı
+Depo kökünde Python 3.8+ ile:
 
-Bu araçtan çıkan rapor kurumsal müşterilere sunulur. Bu yüzden tek bir kural
-her şeyin önünde gelir:
-
-> **Emin olmadığınız hiçbir teknik ayrıntıyı yazmayın.**
-> Var olmayan bir Microsoft özelliği, yanlış bir lisans iddiası veya olmayan bir
-> portal yolu, eksik bilgiden çok daha zararlıdır. Emin değilseniz, emin
-> olduğunuz daha genel bir ifade kullanın.
-
-## Katkı türleri
-
-### 1. İçerik paketi düzeltmesi (`src/secure_score_tr.json`)
-
-Her kontrol için dört alan bulunur:
-
-| Alan | İçerik |
-|---|---|
-| `aciklama` | Kontrolün ne olduğu, kavramsal olarak. "Kontrol, ..." ile başlar |
-| `etkisi` | Yapılmazsa ne olur: saldırı yolu ve iş sonucu |
-| `bagimlilik` | Ön koşullar, neyin bozulabileceği, ilgili kontroller, lisans gereksinimi |
-| `dogrulama` | Düzeltmenin işe yaradığı nasıl kanıtlanır — gözlemlenebilir bir kontrol |
-
-Düzeltme gönderirken:
-- Değişikliğin **neden** doğru olduğunu, mümkünse bir `learn.microsoft.com`
-  bağlantısıyla açıklayın.
-- Güncel resmi ürün adlarını kullanın: Microsoft Entra ID, Microsoft Defender for
-  Endpoint / for Identity / for Office 365 / for Cloud Apps, Microsoft Purview
-  Information Protection. Emekli adlar (Azure AD, MDATP, MCAS, Azure ATP) kabul edilmez.
-- Microsoft arayüz öğelerinin adlarını Türkçe cümle içinde İngilizce bırakın —
-  örn. "Conditional Access politikası". Bu bilinçli bir tercihtir.
-- Alanlar düz metindir: HTML veya markdown kullanmayın.
-
-### 2. Kod değişikliği
-
-```bash
-python3 src/secure_score_assessment.py --self-test
+```sh
+python Modul/assets/secure_score_assessment.py --self-test
+python -m unittest discover -s tests -v
+node --check tests/generated.js
+node --check tests/browser-check.js
 ```
 
-51 testin tamamı geçmelidir. Davranış değiştiren her katkı **kendi testini
-getirmelidir** — özellikle:
+31 unit test; self-test ayrı 51 denetimdir. Yeni bağımlılık gerekmez. Node yalnız JS/test içindir. `tests/profile-metadata.json` Microsoft genel kontrol metadata'sıdır; tenant snapshot değildir. Diğer test skorları sentetiktir. JSON kaynak varlıkları ve test fixture'larını silmeyin.
 
-- Doğruluk (puan, kapsam, sayım)
-- Renk kontrastı ve okunabilirlik
-- Güvenlik sınırları (salt okunurluk, şema kısıtları)
+## İsteğe bağlı mevcut tarayıcı testi
 
-### 3. Hata bildirimi
+Kurulu Chromium ve Node 22+ gereklidir; bu paket tarayıcı indirmez. Kendi bilgisayarınızda depo kökünden ayrı bir terminalde Chromium'u **yalnız loopback** debug portuyla ve depoya ait özel test profiliyle çalıştırın (CHROME yolunu kendi kurulu tarayıcınıza göre belirleyin):
 
-Bir issue açarken şunları ekleyin: aracın sürümü, Windows ve PowerShell sürümü,
-yaptığınız işlem, beklenen ve gözlenen sonuç. **Ekran görüntüsü veya günlük
-paylaşırken tenant kimliği, alan adı ve kullanıcı adlarını maskeleyin.**
+```sh
+"$CHROME" --headless --remote-debugging-address=127.0.0.1 --remote-debugging-port=9331 --user-data-dir="$PWD/.browser-profile" about:blank
+```
 
-Güvenlik açıkları için issue açmayın — [SECURITY.md](SECURITY.md) dosyasına bakın.
+Diğer terminalde `node tests/browser-check.js` çalıştırın. Portu dış ağa açmayın; kişisel tarayıcı profilini kullanmayın. Windows'ta eşdeğer Chromium komut satırıyla başlatın. Browser script'i sentetik yerel HTML'yi açar; test PNG ve `browser-test-results.json` üretir. Bunlar gitignore kapsamındadır; yayın paketine katmayın. İşi bitirince yalnız başlattığınız test tarayıcısını kapatın. CI browser kurmaz/çalıştırmaz.
 
-## Değiştirmeyin
-
-Aşağıdakiler bilinçli tasarım kararlarıdır; değiştiren bir katkı gerekçesiz kabul edilmez:
-
-- **Salt okunurluk.** Yazma yapan hiçbir Graph çağrısı eklenmez.
-- **Kimlik bilgisi saklanmaması.** Belirteç diske yazılmaz, önbelleğe alınmaz.
-- **Puanın yeniden hesaplanmaması.** Headline puan tenant'ın ölçümünden gelir.
-- **Marka renginin risk renklerini etkilememesi.** Kırmızı her zaman kritik demektir.
-- **Uydurulmuş içerik olmaması.** Veri yoksa "bilgi yok" yazılır.
-
-## Pull request
-
-Küçük ve odaklı tutun. Açıklamada ne değiştiğini ve neden değiştiğini yazın.
-Rapor çıktısını etkileyen değişikliklerde önce/sonra ekran görüntüsü ekleyin.
+Güvenlik raporları için SECURITY.md. PR'larda gerçek müşteri/log/kimlik bilgisi içermeyen sentetik tekrar adımları verin. Test fingerprint dosyasını yalnız belgelenmiş, onaylı değişiklik için güncelleyin; hash eşitliği anlamsal güvenlik garantisi değildir.

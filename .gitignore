@@ -1,29 +1,45 @@
-# Üretilen raporlar - asla depoya girmemeli (tenant verisi içerir)
-Raporlar/
-reports/
-*.html
-!docs/**/*.html
-secure-score-*.csv
-secure-score-*.json
-securescore-raw-*.json
-portal-comparison-*.json
-
-# Python
+# Tenant outputs (not source assets or fixtures)
+/Raporlar/
+/SecureScoreReport/
+/reports/
+/output/
+/exports/
+/raw/
+/securescore-raw-*.json
+/securescore-*.csv
+/securescore-*.xlsx
+*.log
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+*token-cache*
+.msal*/
+.cache/
+.browser-profile/
 __pycache__/
 *.py[cod]
 .venv/
 venv/
-
-# İşletim sistemi
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Editör
+node_modules/
 .vscode/
 .idea/
-*.swp
+.DS_Store
+Thumbs.db
+/browser-test-results.json
+/tests/*.png
+/tests/roundtrip.csv
+/tests/unknown.csv
+/tests/sparse.xlsx
+/securescore_selftest_export.csv
 
-# Paketleme çıktısı
-*.zip
-!docs/ornek/*.zip
+# Exact engine/browser export names, including custom output locations
+securescore-raw-*.json
+secure-score-dashboard-*.html
+secure-score-actions-*.csv
+secure-score-assessment-*.json
+portal-comparison-*.json
+secure-score-islemler.csv
