@@ -6,11 +6,11 @@
 [![Python 3.8+](https://img.shields.io/badge/Python-3.8%2B-3776AB)](https://www.python.org/)
 [![Salt okunur](https://img.shields.io/badge/eri%C5%9Fim-salt%20okunur-00A14B)](#güvenlik)
 [![Lisans: MIT](https://img.shields.io/badge/lisans-MIT-blue)](LICENSE)
-[![Önizleme 3.2.3-preview.1](https://img.shields.io/badge/sürüm-3.2.3--preview.1-orange)](release-notes.md)
+[![Önizleme 3.2.3](https://img.shields.io/badge/sürüm-3.2.3--preview.1-orange)](release-notes.md)
 
 Tenant'ınıza salt-okunur bağlanır, API'nin erişilebilir Secure Score puanlarını ve iyileştirme profillerini okur; sonucu **tek dosyalık, çevrimdışı açılan, Türkçe** bir HTML rapora dönüştürür. Tenant ayarlarını değiştirmez. Varsayılan etkileşimli akışta parola yalnız Microsoft ekranına girilir; erişim token'ı süreç belleğinde tutulur, kalıcı olarak kaydedilmez.
 
-**3.2.3-preview.1 bir önizleme sürümüdür.** Sentetik demo ve kaynak bağlantılı iyileştirme kataloğu içerir; üretim, tüm içerik, teknik koruma veya Secure Score kazanımı için doğruluk garantisi değildir. Microsoft puanları/durumları ile aracın etki önceliklendirme modeli ayrı kavramlardır.
+**3.2.3 bir önizleme sürümüdür.** Sentetik demo ve kaynak bağlantılı iyileştirme kataloğu içerir; üretim, tüm içerik, teknik koruma veya Secure Score kazanımı için doğruluk garantisi değildir. Microsoft puanları/durumları ile aracın etki önceliklendirme modeli ayrı kavramlardır.
 
 ---
 
@@ -58,7 +58,7 @@ Varsayılan etkileşimli yol Microsoft'un kamuya açık first-party istemci kiml
 
 ### Kalıcı modül kurulumu gerektirmeyen yol (önerilen)
 
-1. [Releases](../../releases) sayfasından **`v3.2.3-preview.1` önizleme** paketini indirin.
+1. [Releases](../../releases) sayfasından **`v3.2.3` önizleme** paketini indirin.
 2. ZIP'e sağ tıklayın → **Tümünü ayıkla**. ZIP'in içinden doğrudan çalıştırmayın. GitHub'a yükleyecekseniz ZIP'i değil, ayıklanan depo dosyalarını kullanın; bkz. [GITHUB-YUKLEME.md](GITHUB-YUKLEME.md).
 3. Önce PowerShell terminalini ayıklanan depo kökünde açıp ağ/tenant oturumu olmadan sentetik raporu ve motor denetimlerini deneyin:
 
@@ -238,7 +238,7 @@ Kaynak defteri ve kapsam ayrıntıları: [docs/README.md](docs/README.md), [docs
 
 ## Depo yapısı
 
-Aşağıdaki yollar **3.2.3-preview.1** paketinin depo köküne göredir:
+Aşağıdaki yollar **3.2.3** paketinin depo köküne göredir:
 
 ```text
 SecureScoreLens/
@@ -288,8 +288,8 @@ Katkılar memnuniyetle karşılanır — özellikle kaynaklı içerik doğruluğ
 
 ## Yayın, bütünlük ve kaynak geçmişi
 
-- GitHub yükleme adımları: [GITHUB-YUKLEME.md](GITHUB-YUKLEME.md). Etiket **`v3.2.3-preview.1`** olmalı; GitHub Release **pre-release** işaretlenmelidir. Bu README düzenlemesi GitHub'a push, upload veya yayın yapmaz.
-- Mantıksal sürüm **`3.2.3-preview.1`**; PowerShell manifestinde **`ModuleVersion=3.2.3`**, PowerShellGet için alfanümerik prerelease etiketi **`preview1`** kullanılır. Galeriye otomatik yayın yoktur.
+- GitHub yükleme adımları: [GITHUB-YUKLEME.md](GITHUB-YUKLEME.md). Etiket **`v3.2.3`** olmalı; GitHub Release **pre-release** işaretlenmelidir. Bu README düzenlemesi GitHub'a push, upload veya yayın yapmaz.
+- Mantıksal sürüm **`3.2.3`**; PowerShell manifestinde **`ModuleVersion=3.2.3`**, PowerShellGet için alfanümerik prerelease etiketi **`preview1`** kullanılır. Galeriye otomatik yayın yoktur.
 - Onaylı **`v3.2.2-Secenekler-TR-ONIZLEME`** kaynağı esas alınmıştır; özgün v3.2.2 baseline değiştirilmedi. Kaynak SHA-256 ve korunma bilgisi [SOURCE-PROVENANCE.json](SOURCE-PROVENANCE.json), paket dosyalarının bütünlük listesi [SHA256SUMS.txt](SHA256SUMS.txt) içindedir. Checksum dosyası kendisini hash'lemez.
 - Bu belge paket dışındaki birleştirilmiş README teslimidir; mevcut ZIP, kod veya paket checksum'ları değiştirilmedi. Belgeyi depoda `README.md` yerine koyarsanız, o değişiklik için checksum listesini ve yayın kontrollerini ayrıca güncelleyin; eski checksum'un yeni belgeyi doğruladığını varsaymayın.
 - Yayın ayrıntıları: [CHANGELOG.md](CHANGELOG.md), [release-notes.md](release-notes.md), [PUBLICATION-CHECKS.md](PUBLICATION-CHECKS.md). Göreli belge bağlantıları ayıklanan depo kökünde kullanılmak üzere yazılmıştır.
