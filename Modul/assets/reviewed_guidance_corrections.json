@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "description": "Independently reviewed operational corrections; historical Microsoft profile translations remain unchanged. No tenant actions or scoring validation.",
+  "corrections": [
+    {
+      "id": "AATP_ADCSMisconfiguredCertificateTemplateEku",
+      "title": "Edit overly permissive Certificate Template with privileged EKU (Any purpose EKU or No EKU) (ESC2)",
+      "category": "Identity",
+      "originalRemediationSha256": "2b343074b56b1cbb66b56f835b6068727a3ab39e2e252dde32b7988b5c614e03",
+      "remediationTR": "<p><strong>Gözden geçirilmiş operasyonel düzeltme — ESC2.</strong> Tarihsel profildeki “Any Purpose EKU'yu kaldırmak” seçeneğini tek başına tamamlanma ölçütü olarak kullanmayın. Tek EKU'nun silinmesi boş EKU bırakabilir; ayrıcalıksız kayıt yetkisi sürüyorsa bulgu giderilmiş sayılmaz.</p><ol><li>Etkilenen şablonun mevcut EKU listesini, kayıt (enrollment) izinlerini ve yayımlayan CA'ları kaydedin; iş gereksinimini PKI sahibiyle doğrulayın.</li><li>Aşırı geniş kayıt izinlerini en az ayrıcalıkla sınırlandırın. Şablon tasarımını ve uygun yönetici onayı/yetkili imza gereksinimlerini PKI sahibiyle inceleyin; değişikliği kontrollü ortamda sınayın.</li><li>Değişiklikten sonra ortaya çıkan EKU listesini, etkin enrollment ACL'lerini ve issuance/onay-imza şartlarını yeniden okuyun. Boş EKU + ayrıcalıksız kayıt birleşimini başarılı kabul etmeyin; Any Purpose'ın yokluğu tek başına yeterli değildir.</li></ol><p>Bu rapor şablon değiştirmez; tenant doğrulaması veya puan garantisi vermez.</p>",
+      "status": "reviewed",
+      "sources": [
+        {
+          "url": "https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/certificates",
+          "checkedAt": "2026-10-30",
+          "summary": "ESC2 includes absent or Any Purpose EKUs with unprivileged enrollment; restrictive permissions and approval/signature controls are documented."
+        }
+      ],
+      "checkedAt": "2026-10-30",
+      "warnings": [
+        "Any Purpose silinmesi, boş EKU sonucunda tek başına ESC2 giderimi değildir."
+      ],
+      "portalVerified": false,
+      "tenantVerified": false
+    },
+    {
+      "id": "mdo_zapphish",
+      "title": "Create zero-hour auto purge policies for phishing messages",
+      "category": "Apps",
+      "originalRemediationSha256": "ba872111d7a4ad7c7c548883c2b2c2d9af5de1282076784d058f31fadcd6fa05",
+      "remediationTR": "<p><strong>Gözden geçirilmiş operasyonel düzeltme — phishing ZAP.</strong> Tarihsel profilin Anti-phishing yönlendirmesi yerine, Defender portalında Email &amp; collaboration &gt; Policies &amp; rules &gt; Threat policies &gt; Anti-spam altında alıcıya uygulanan gelen posta ilkesini inceleyin.</p><ol><li>Alıcı kapsamını, istisnaları ve öncelik/preset etkisini mevcut yapılandırmadan belirleyin; kapsamı yanlışlıkla daraltmayın.</li><li>Etkin anti-spam ilkesindeki phishing ZAP ayarını ve Phishing kararının eylemini birlikte doğrulayın. Junk Email veya karantina eylemi beklenen temizleme davranışıyla eşleşmelidir; başka bir karar eylemi aynı sonucu garanti etmez.</li><li>Kaydetmeden önce kapsamı onaylayın; sonrasında etkin ilke ve mümkünse onaylı test/olay kanıtıyla sonucu kontrol edin. Anti-phishing ilkesinin varlığı bu kontrolü doğrulamaz.</li></ol>",
+      "status": "reviewed",
+      "sources": [
+        {
+          "url": "https://learn.microsoft.com/en-us/defender-office-365/zero-hour-auto-purge",
+          "checkedAt": "2026-10-30",
+          "summary": "Phishing ZAP uses the applicable anti-spam policy and its phishing verdict action."
+        }
+      ],
+      "checkedAt": "2026-10-30",
+      "warnings": [],
+      "portalVerified": false,
+      "tenantVerified": false
+    },
+    {
+      "id": "MDA_CitrixSF_LoginFailLockoutSecs",
+      "title": "Enhance 'login maximum attempts' - Lockout timer",
+      "category": "Identity",
+      "originalRemediationSha256": "2d2e48dbb1950fd3a5257e5f5b6120ce8a4081f647eda98d2316933e1afdd904",
+      "remediationTR": "<p><strong>İNCELEME GEREKLİ — uygulama durduruldu.</strong> Kontrol başlığı/kimliği kilitlenme süresiyle ilgiliyken tarihsel kaynak başarısız oturum açma denemelerini tarif ediyor. İlgili Citrix alanının birimi ve ürün/sürüm eşlemesi doğrulanmamıştır.</p><p>Bu kayda dayanarak deneme sayısını veya süreyi değiştirmeyin. Özellikle kaynak metindeki 300 değerini başarısız deneme eşiğine uygulamayın; bunun saniye olduğunu da varsaymayın.</p><p>Ürün sahibi, gerçek StoreFront sürümündeki ayar adını, birimini, geçerli değer aralığını ve yetkili Citrix belgesini eşleştirmeden uygulanabilir bir tarif yoktur. Mevcut ayarı ve kurumun kilitleme standardını kaydedip incelemeye gönderin. Doğrulanmış eşleme gelince rehber ayrıca gözden geçirilmelidir.</p>",
+      "status": "requires-review",
+      "sources": [],
+      "checkedAt": "2026-10-30",
+      "warnings": [
+        "Citrix alanı/birimi doğrulanmadı; sayısal değişiklik ve tamamlandı/puan iddiası engellenmelidir."
+      ],
+      "portalVerified": false,
+      "tenantVerified": false
+    },
+    {
+      "id": "mdo_antiphishingpolicies",
+      "title": "Ensure that an anti-phishing policy has been created",
+      "category": "Apps",
+      "originalRemediationSha256": "8fb11ef70d4313deb24e016e3baa9d1d49e70e4f845c1f78596fe4be9084bbbc",
+      "remediationTR": "<p><strong>Gözden geçirilmiş operasyonel düzeltme — portal yolu.</strong> Yalnızca adlı New-AntiPhishPolicy nesnesi oluşturmak, hedeflenen ayarları veya alıcılara uygulanmasını sağlamaz; tarihsel tek satırı düzeltme alternatifi olarak çalıştırmayın.</p><ol><li>Defender portalı &gt; Email &amp; collaboration &gt; Policies &amp; rules &gt; Threat policies &gt; Anti-phishing sayfasında mevcut/preset korumasını inceleyin. Gerekliyse kurumca onaylı özel ilke sihirbazını kullanın.</li><li>Users, groups, and domains adımında hedef alıcıları ve istisnaları açıkça belirleyin. Phishing threshold &amp; protection adımında kaynak hedefi olan eşiği en az 2 yapın; mailbox intelligence, impersonation için intelligence koruması ve spoof intelligence ayarlarını açıkça denetleyin.</li><li>Actions adımında kurumca onaylı koruma/karantina eylemlerini seçin; Review sayfasında kapsam ve ayarları kontrol edip kaydedin.</li><li>Son kontrolde ilkenin gerekli ayarlarını, ilişkili etkin kuralını, alıcı kapsamını ve istisnalarını doğrulayın. Standard/Strict preset kapsamındaki alıcılara özel ilkenin üstün geldiğini varsaymayın. Yalnızca policy nesnesi varsa uygulama doğrulanmış değildir.</li></ol><p>Doğrulanmamış yeni PowerShell oluşturma tarifi sunulmaz; tenantta işlem yapılmamıştır.</p>",
+      "status": "reviewed",
+      "sources": [
+        {
+          "url": "https://learn.microsoft.com/en-us/defender-office-365/anti-phishing-policies-mdo-configure",
+          "checkedAt": "2026-10-30",
+          "summary": "Portal creation combines policy and rule; recipient scope, enabled state, explicit protection settings, and preset precedence determine application."
+        }
+      ],
+      "checkedAt": "2026-10-30",
+      "warnings": [],
+      "portalVerified": false,
+      "tenantVerified": false
+    },
+    {
+      "id": "mdo_safelinksforOfficeApps",
+      "title": "Ensure Safe Links for Office Applications is Enabled",
+      "category": "Apps",
+      "originalRemediationSha256": "50ccb938fb51698ca9f171f60aa85725b7c759f21e8049b6cddaef2253345029",
+      "remediationTR": "<p><strong>Gözden geçirilmiş operasyonel düzeltme — Safe Links / Office.</strong> Tarihsel HTML içindeki bölünmüş ilke adını kopyalamayın. Önce mevcut ilke/kural ve alıcıların Standard/Strict preset kapsamını inceleyin. Aşağıdaki örnek yalnızca onaylı özel ilke tasarımı içindir; kurum alanı ve kapsam onaylanmadan çalışmaz.</p><pre>$policyName = 'CIS SafeLinks Policy'\n$recipientDomain = 'REPLACE_WITH_APPROVED_ACCEPTED_DOMAIN'\nif ($recipientDomain -eq 'REPLACE_WITH_APPROVED_ACCEPTED_DOMAIN') { throw 'Önce onaylı kabul edilen alıcı alanını belirleyin.' }\nNew-SafeLinksPolicy -Name $policyName -EnableSafeLinksForOffice $true -TrackClicks $true -AllowClickThrough $false\nNew-SafeLinksRule -Name ($policyName + ' Rule') -SafeLinksPolicy $policyName -RecipientDomainIs $recipientDomain -Enabled $true -Priority 0\nGet-SafeLinksPolicy -Identity $policyName\nGet-SafeLinksRule -Identity ($policyName + ' Rule')</pre><p>İlke zaten varsa bu oluşturma örneğini tekrar çalıştırmayın; mevcut nesneyi ayrı değişiklik planıyla yönetin. Okumada ad bağlantısını, etkin kuralı, kapsamı ve Office ayarını kontrol edin. Özel öncelik 0, Standard/Strict preset korumasını geçersiz kılmaz. Office doğrulaması desteklenen, iş hesabıyla açılmış Office belgesindeki bağlantı davranışıdır; e-posta URL'sinin yeniden yazılmasını başarı koşulu yapmayın.</p>",
+      "status": "reviewed",
+      "sources": [
+        {
+          "url": "https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/new-safelinkspolicy?view=exchange-ps",
+          "checkedAt": "2026-10-30",
+          "summary": "TrackClicks and EnableSafeLinksForOffice are supported; a policy requires an associated rule to apply to recipients."
+        },
+        {
+          "url": "https://learn.microsoft.com/en-us/defender-office-365/safe-links-about",
+          "checkedAt": "2026-10-30",
+          "summary": "Office protection checks document links without rewriting them; Standard and Strict preset policies precede custom Safe Links policies."
+        },
+        {
+          "url": "https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/new-safelinksrule?view=exchange-ps",
+          "checkedAt": "2026-10-30",
+          "summary": "Safe Links rules support explicit enabled state, priority, recipient-domain conditions, and linked policy identity."
+        }
+      ],
+      "checkedAt": "2026-10-30",
+      "warnings": [
+        "Örnek değişiklik yapabilir; onaylı kapsam ve mevcut nesne incelemesi gerekir."
+      ],
+      "portalVerified": false,
+      "tenantVerified": false
+    },
+    {
+      "id": "IntegratedApps",
+      "title": "Ensure user consent to apps accessing company data on their behalf is not allowed",
+      "category": "Identity",
+      "originalRemediationSha256": "f3f20a2bdc6678ed1a804947e7e9307af600397b67eee91fd45ab50cdc28797e",
+      "remediationTR": "<p><strong>İNCELEME GEREKLİ — çelişen onay modelleri.</strong> Kaynak başlığı kullanıcı onayının yasaklanmasını isterken tarihsel adımlar doğrulanmış yayımcıların seçili izinleri için sınırlı kullanıcı onayını anlatır. Bunlar aynı sonuç değildir; rapor hiçbirini otomatik seçmez.</p><p>Entra &gt; Enterprise apps &gt; Consent and permissions &gt; User consent settings sayfasında mevcut modeli ve izin sınıflandırmasını okuyun. Kontrol sahibi, amaçlanan kabul ölçütünü onaylamadan ayarı değiştirmeyin.</p><ul><li><strong>Kullanıcı onayı yok:</strong> kullanıcıların kendi adlarına yeni uygulama onayı vermesine izin verilmemesi hedefidir.</li><li><strong>Sınırlı kullanıcı onayı:</strong> doğrulanmış yayımcı/tenant uygulamaları ve seçilmiş düşük etkili izinlerle sınırlı onaydır; toplu yasak olarak gösterilemez.</li></ul><p>Seçilen model raporda açıkça kaydedilmelidir; sınırlı onay açıksa “tüm kullanıcı onayı kapalı” sonucu başarısızdır. Mevcut onay izinleri ayrıca incelenmelidir. Bu kayıt güncel Microsoft Secure Score puanını veya tamamlanma koşulunu doğrulamaz.</p>",
+      "status": "requires-review",
+      "sources": [
+        {
+          "url": "https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-user-consent",
+          "checkedAt": "2026-10-30",
+          "summary": "Disabling user consent differs from limited verified-publisher consent; existing consent grants are unchanged."
+        }
+      ],
+      "checkedAt": "2026-10-30",
+      "warnings": [
+        "Başlık ve tarihsel yönerge farklı modellerdir; kabul ölçütü ve model seçimi kontrol sahibince incelenmelidir."
+      ],
+      "portalVerified": false,
+      "tenantVerified": false
+    },
+    {
+      "id": "mdo_spam_notifications_only_for_admins",
+      "title": "Ensure Exchange Online Spam Policies are set to notify administrators",
+      "category": "Apps",
+      "originalRemediationSha256": "055dd1bb404c99bf4cfbd7108e613d0f263401f930d73ddd8acc84d12f2d5fc2",
+      "remediationTR": "<p><strong>Gözden geçirilmiş operasyonel düzeltme — giden spam.</strong> Tarihsel kırık parametreleri çalıştırmayın. Önce etkin outbound spam ilkesini, mevcut yönetici alıcılarını ve kurumsal gizlilik onayını inceleyin. Bildirim için güncel User restricted from sending email uyarı ilkesinin etkinliğini ve yetkili yönetici hedeflerini Defender portalındaki uyarı ilkelerinden doğrulayın; eski NotifyOutboundSpam ayarını modern uyarının eşdeğeri saymayın.</p><p>BCC, yalnızca bildirim değil ileti içeriğinin kopyasıdır. Ancak açık onay varsa aşağıdaki ayrı BCC örneğini kuruma uyarlayın; varsayılan değerler değişiklik yapmayı durdurur.</p><pre>$policyIdentity = 'REPLACE_WITH_REVIEWED_POLICY_IDENTITY'\n$adminRecipients = @('REPLACE_WITH_AUTHORIZED_ADMIN_ADDRESS')\nif ($policyIdentity -eq 'REPLACE_WITH_REVIEWED_POLICY_IDENTITY' -or $adminRecipients -contains 'REPLACE_WITH_AUTHORIZED_ADMIN_ADDRESS') { throw 'Önce ilke, yetkili alıcılar ve gizlilik onayını doğrulayın.' }\nGet-HostedOutboundSpamFilterPolicy -Identity $policyIdentity\nSet-HostedOutboundSpamFilterPolicy -Identity $policyIdentity -BccSuspiciousOutboundAdditionalRecipients $adminRecipients -BccSuspiciousOutboundMail $true\nGet-HostedOutboundSpamFilterPolicy -Identity $policyIdentity</pre><p>Liste değiştirme etkisini önceden onaylayın; son okumada BCC hedefleri ve etkinlik durumunu denetleyin. Modern uyarının eski kontrol puanını sağlayıp sağlamadığı doğrulanmadı; burada puan garantisi yoktur.</p>",
+      "status": "reviewed",
+      "sources": [
+        {
+          "url": "https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/set-hostedoutboundspamfilterpolicy?view=exchange-ps",
+          "checkedAt": "2026-10-30",
+          "summary": "Bcc copies outbound spam to designated recipients; restricted-sender alert policy replaces legacy notification settings."
+        }
+      ],
+      "checkedAt": "2026-10-30",
+      "warnings": [
+        "BCC mesaj içeriğini yetkili alıcılara kopyalar; gizlilik ve alıcı onayı gerekir.",
+        "Modern uyarı ile tarihsel Secure Score puanı eşdeğerliği doğrulanmadı."
+      ],
+      "portalVerified": false,
+      "tenantVerified": false,
+      "originalImpactSha256": "9836f045ae090efa1876854e7175125b7f102aca5ba8604fd915f0ceef96a09e",
+      "impactTR": "Giden spam BCC hedefleri mesaj içeriğini alabilir. Yalnız yetkili yönetici adreslerini kullanın; gizlilik, veri saklama ve erişim incelemesi gerekir. Uyarı alıcıları ile BCC alıcıları ayrı değerlendirilmelidir. Tarihsel grup erişim isteği metni bu kontrolün operasyonel etkisini açıklamıyordu."
+    },
+    {
+      "id": "spo_external_sharing_managed",
+      "title": "Ensure SharePoint external sharing is managed through domain whitelist/blacklists",
+      "category": "Apps",
+      "originalRemediationSha256": "33291a5659ad0f9fb51ba547ef876e65121868f4d35c7138a14c6c8c6f954cc9",
+      "remediationTR": "<p><strong>Gözden geçirilmiş operasyonel düzeltme — dış paylaşım alanları.</strong> Önce mevcut tenant ve ilgili site kısıtlarını okuyun. AllowList ve BlockList farklı modellerdir; kurumun onayladığı modeli seçmeden veya mevcut onaylı partner listesini incelemeden değiştirmeyin. Liste parametresine verilen değer mevcut listenin yerine geçebilir.</p><pre>Get-SPOTenant | Select-Object SharingDomainRestrictionMode,SharingAllowedDomainList,SharingBlockedDomainList\n$reviewedFullDomainList = 'REPLACE_WITH_FULL_REVIEWED_PARTNER_DOMAIN_LIST'\n$approvedAllowListChange = $false\nif (-not $approvedAllowListChange -or $reviewedFullDomainList -eq 'REPLACE_WITH_FULL_REVIEWED_PARTNER_DOMAIN_LIST') { throw 'Mevcut partnerleri koruyan tam liste ve AllowList değişiklik onayı gerekir.' }\nSet-SPOTenant -SharingDomainRestrictionMode AllowList -SharingAllowedDomainList $reviewedFullDomainList\nGet-SPOTenant | Select-Object SharingDomainRestrictionMode,SharingAllowedDomainList,SharingBlockedDomainList</pre><p>Bu örnek sadece ayrıca onaylanan AllowList modelidir; BlockList isteniyorsa aynı örneği körlemesine kullanmayın, onaylı engelleme listesiyle SharingBlockedDomainList modelini ayrı planlayın. Yer tutucuyu gerçek üretim alanı sanmayın; mevcut partnerleri tam listeye koruyarak dahil edin. Okuma sonucunda amaçlanan mod/listeyi ve site düzeyi daha sıkı kuralları denetleyin; ortaklarla paylaşımın kesilmediğini onaylı testle doğrulayın.</p>",
+      "status": "reviewed",
+      "sources": [
+        {
+          "url": "https://learn.microsoft.com/en-us/powershell/module/microsoft.online.sharepoint.powershell/set-spotenant?view=sharepoint-ps",
+          "checkedAt": "2026-10-30",
+          "summary": "SharingDomainRestrictionMode, SharingAllowedDomainList and SharingBlockedDomainList are separate intact parameters."
+        }
+      ],
+      "checkedAt": "2026-10-30",
+      "warnings": [
+        "Mevcut izinli partner listesini okumadan veya korumadan listeyi değiştirmeyin."
+      ],
+      "portalVerified": false,
+      "tenantVerified": false
+    }
+  ]
+}
