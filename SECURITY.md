@@ -9,3 +9,12 @@ Bu önizleme salt-okunur değerlendirme içindir; güvenlik sertifikası, tenant
 - GitHub'da Security > Advisories > Report a vulnerability mevcut ve etkinse özel bildirim kullanın; değilse depo sahibinin kurumsal özel bildirim kanalını belirleyin. Hassas ayrıntıyla public issue açmayın. Bu pakette yeni bir e-posta adresi veya yanıt süresi taahhüdü tanımlanmaz.
 
 Desteklenen inceleme hedefi bu preview paketidir. Windows login/tenant/API/gerçek printer doğrulanmadı; 460 envanter kaydının tüm içerikleri teknik olarak doğrulanmış değildir. Known limits: `release-notes.md`. Yayın öncesi kontroller heuristiktir, kapsamlı güvenlik denetimi değildir.
+
+
+## preview.2 özel çıktı ve HTTP sınırları
+
+ / bearer / pagination | Sertleştirildi | Sabit public graph.microsoft.com HTTPS443; otomatik yönlendirme reddi, tekrar eden nextLink reddi; mock transport testleri |
+| Loopback callback / hata yansıtma / BSTR | Sertleştirildi | Kriptografik state, süre/başlık limitleri, sabit hata; Windows canlı doğrulaması yapılmadı |
+| Çıktı erişimi | Sınırlandırıldı | Yeni dosyalarda özel izin isteği; ACL hatası veri yazmadan durur; mevcut klasör/üst paylaşım/yedek ACL değişmez; dosya sistemi izinleri uygulamıyorsa açık uyarı, gizlilik garantisi yok |
+| Auth scope açıklaması | Düzeltildi | Organization.Read.All rapor amacı isteğe bağlı olsa da mevcut akış her oturumda ister; izin kapsamı değiştirilmedi |
+
