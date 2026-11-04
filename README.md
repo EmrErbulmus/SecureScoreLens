@@ -57,8 +57,10 @@ Varsayılan etkileşimli yol Microsoft'un kamuya açık first-party istemci kiml
 
 ### Kalıcı modül kurulumu gerektirmeyen yol (önerilen)
 
-1. [Releases](../../releases) sayfasından **`v3.2.3` önizleme** paketini indirin.
-2. ZIP'e sağ tıklayın → **Tümünü ayıkla**. ZIP'in içinden doğrudan çalıştırmayın. GitHub'a yükleyecekseniz ZIP'i değil, ayıklanan depo dosyalarını kullanın; bkz. [GITHUB-YUKLEME.md](GITHUB-YUKLEME.md).
+1. **[İndirme sayfası — GitHub Releases](https://github.com/EmrErbulmus/SecureScoreLens/releases)**
+
+   Paket adı: **`SecureScoreLens-v3.2.3-preview.2.zip`**. Yayın hazır olduğunda Release sayfasındaki **Assets** bölümünden bu dosyayı seçin. Bu bağlantı yayın sayfasına gider; doğrudan ZIP bağlantısı değildir. İlgili varlık henüz görünmüyorsa yayınlanmasını bekleyin.
+2. ZIP'e sağ tıklayın → **Tümünü ayıkla**. ZIP'in içinden doğrudan çalıştırmayın. GitHub kaynak deposuna yükleyecekseniz ZIP'in kendisi yerine ayıklanan kaynak dosyalarını kullanın; ZIP dosyası Release varlığı olarak ayrıca sunulabilir.
 3. Önce PowerShell terminalini ayıklanan depo kökünde açıp ağ/tenant oturumu olmadan sentetik raporu ve motor denetimlerini deneyin:
 
 ```powershell
@@ -78,7 +80,7 @@ Normal çalıştırmada tarayıcıda Microsoft oturum açma/izin ekranı açıl�
 
 Başlatıcı çıktıları varsayılan **`Raporlar/`** altına yazar. Klasörü kaldırmadan önce raporları ve hassas verileri kuruluşunuzun saklama politikasına göre yönetin; isteğe bağlı kalıcı kurulum yaptıysanız onun kaldırma yolunu da kullanın.
 
-Sadece hazır sentetik arayüzü görmek için [SecureScoreLens-Secenekler-TR-ONIZLEME.html](SecureScoreLens-Secenekler-TR-ONIZLEME.html) dosyasını indirip yerel tarayıcıda açın. Demo puanları ve atamalar gerçek müşteri ölçümü değildir. Paketlenen HTML onaylı önizlemeyle **byte-identical** tutulmuştur; GitHub yayın sürümü dosyanın içine sonradan yazılmamıştır.
+Sentetik arayüzü görmek için `.\BASLAT.cmd -Demo` komutunu kullanın. Demo raporu yerel olarak üretilir; demo puanları ve atamaları gerçek müşteri ölçümü değildir. Bu temiz paket hazır önizleme HTML dosyası içermez.
 
 ### PowerShell modülü olarak
 
@@ -197,6 +199,8 @@ Kaynak bağlantıları ve mevcut doğrulama rehberleri kanıt toplama planını 
 - **Etkileşimli kimlik doğrulama.** Authorization Code + PKCE S256, loopback callback ve `state` kontrolü kullanılır. Parola araca girilmez; token süreç belleğindedir, kalıcı token kaydı yapılmaz. Bu, bellekten tüm izlerin silindiğine dair adli güvence değildir. Token içeren ekran/diagnostic paylaşmayın.
 - **Her etkileşimli çalıştırmada yeniden onay akışı.** Microsoft izin ekranı açılır; sessiz token yeniden kullanımına dayanan bir hızlı başlangıç değildir. İstenen izinler onay öncesi gösterilir.
 - **Yerel sertleştirme.** Callback dinleyicisi loopback'e bağlanır; state kontrolü, sınırlı okuma ve sabit hata mesajı eşlemeleri vardır. Raporun dış bağlantıları `http(s)` şemasıyla sınırlandırılır. Bunlar kapsamlı güvenlik denetimi veya açık bulunmadığı garantisi değildir.
+- **Bağlantı ve süre sınırları.** Graph taşıması public `graph.microsoft.com` HTTPS/443 ile sınırlandırılır; otomatik HTTP yönlendirmeleri ve tekrar eden sayfalama bağlantıları reddedilir. Loopback callback süre/başlık limitleri ve kriptografik state kullanır. Bunlar Windows üzerinde canlı doğrulanmış güvenlik garantileri değildir.
+- **Yeni dosyalarda özel erişim isteği.** Çıktı yazımı yeni dosyalarda özel izin uygulamayı dener; ACL hatasında veri yazmadan durur. Dosya sistemi izinleri desteklemiyorsa uyarı verilir. Mevcut klasör, üst klasör paylaşımı ve yedek izinleri değiştirilmez; bu koruma tek başına gizlilik garantisi değildir.
 - **Hassas çıktı.** Rapor, ham JSON, CSV/XLSX, log, tenant bilgileri ve gerçek müşteri atamaları hassastır; **GitHub'a yüklemeyin**. Token'ın kaydedilmemesi, raporların hassas olmadığı anlamına gelmez. `.gitignore` bir veri kaybı önleme sistemi değildir; içeriği temizlemez ve önceden izlenen dosyaları kaldırmaz.
 
 Güvenlik açığı bildirimi için [SECURITY.md](SECURITY.md).
@@ -208,7 +212,7 @@ Güvenlik açığı bildirimi için [SECURITY.md](SECURITY.md).
 | `SecurityEvents.Read.All` | Secure Score için gerekli salt-okunur Graph izni |
 | `Organization.Read.All` | Kurum adı/alan adı verisi için işlevsel olarak isteğe bağlıdır; **mevcut etkileşimli akış iki izni birlikte ister** |
 
-Bu yayın izin istemini veya kimlik doğrulamayı değiştirmez. Yönetici onayı tenant politikasına göre gerekebilir. **Onay verme yetkisi ile günlük veri okuma rolü farklıdır:** onayı kuruluşun yetkili yöneticisi versin; rutin okumada ilgili hizmet için uygun en az ayrıcalıklı rolü (örneğin uygun Security Reader yetkisi) yöneticinizle doğrulayın. Global Reader'ın her tenant/veri kapsamı için yeterli olduğu varsayılmaz; rutin çalıştırmayı Global Administrator hesabıyla yapmayı önermiyoruz. Rol, lisans ve veri kapsamı API sonucunu etkiler; yalnız izin verilmesi bütün verilere erişimi garanti etmez.
+Bu önizleme istenen izin kapsamını genişletmez; kimlik doğrulama ve taşıma katmanına koruyucu kontroller ekler. Yönetici onayı tenant politikasına göre gerekebilir. **Onay verme yetkisi ile günlük veri okuma rolü farklıdır:** onayı kuruluşun yetkili yöneticisi versin; rutin okumada ilgili hizmet için uygun en az ayrıcalıklı rolü (örneğin uygun Security Reader yetkisi) yöneticinizle doğrulayın. Global Reader'ın her tenant/veri kapsamı için yeterli olduğu varsayılmaz; rutin çalıştırmayı Global Administrator hesabıyla yapmayı önermiyoruz. Rol, lisans ve veri kapsamı API sonucunu etkiler; yalnız izin verilmesi bütün verilere erişimi garanti etmez.
 
 ---
 
@@ -233,67 +237,76 @@ Bu yayın izin istemini veya kimlik doğrulamayı değiştirmez. Yönetici onay�
 | Etki çevirileri | **460** kaynak-hash bağlı kayıt |
 | Canlı portal / gerçek tenant içerik doğrulaması | **0** |
 
-Kaynak defteri ve kapsam ayrıntıları: [docs/README.md](docs/README.md), [docs/coverage.json](docs/coverage.json). İçerik kapsamı ile tenant'ta uygulama/kanıt doğrulaması ayrı tutulmalıdır.
+İçerik kapsamı ile tenant'ta uygulama/kanıt doğrulaması ayrı tutulmalıdır. Temiz paket, içerik varlıklarını içerir; geliştirme kaynak defterleri ve test klasörleri bu dağıtıma dahil değildir.
+
+### 3.2.3-preview.2 ile öne çıkanlar
+
+- **Dört çalışma zamanı düzeltmesi:** kategori fırsat puanı ve açık işlem sayısı yalnız açık durumları kullanır; gerileme aralığı satır sayısı yerine son ölçüme bağlı gerçek UTC günleriyle hesaplanır; kapsamdan çıkan kontroller tarihsel ölçüm ve mevcut profil bilgisiyle gösterilir; trend ve durum güncellemeleri UTC tarih/saat sırasına göre işlenir.
+- **Sekiz operasyonel içerik kaydı:** `reviewed_guidance_corrections.json` içinde **6 gözden geçirilmiş düzeltme, 2 güvenli bekletme** bulunur. Citrix kilitleme süresi birimi ve IntegratedApps/onay semantiği, tenant/ilke doğrulaması olmadan kesin çözüm olarak sunulmaz. Güvenli bekletme teknik tamamlanma anlamına gelmez.
+- Güncel operasyonel rehber; tam kontrol ID'si, başlık, kategori ve özgün kaynak SHA-256 bağıyla uygulanır. Özgün Microsoft yönergesi ayrı arşiv verisi olarak korunur; eylem/bulgu/CSV/JSON çıktılarında güncel rehber ile kaynak geçmişi ayrılır.
+- Microsoft'un mevcut/maksimum puanı, risk paleti ve rapor düzeni korunur. Bu düzeltmeler tüm envanterin teknik olarak doğrulandığı veya gerçek tenant'ta puan kazanıldığı anlamına gelmez.
 
 ---
 
-## Depo yapısı
+## Temiz paket yapısı
 
-Aşağıdaki yollar **3.2.3** paketinin depo köküne göredir:
+Aşağıdaki **15 dosya**, `3.2.3-preview.2` temiz ZIP'inin köküne göredir:
 
 ```text
 SecureScoreLens/
-├─ BASLAT.cmd                         Windows hızlı başlangıç
-├─ BASLAT.ps1                         PowerShell başlatıcısı
-├─ Istege-Bagli-Kalici-Kurulum.ps1     İsteğe bağlı kurulum/kaldırma
+├─ BASLAT.cmd
+├─ BASLAT.ps1
+├─ Istege-Bagli-Kalici-Kurulum.ps1
+├─ LICENSE
 ├─ Modul/
-│  ├─ SecureScoreLens.psd1             PowerShell manifesti
-│  ├─ SecureScoreLens.psm1             PowerShell modülü
+│  ├─ SecureScoreLens.psd1
+│  ├─ SecureScoreLens.psm1
 │  └─ assets/
-│     ├─ secure_score_assessment.py    Analiz/HTML motoru (Python stdlib)
-│     ├─ secure_score_tr.json          Türkçe içerik paketi
-│     └─ remediation_options_tr.json   Ayrıntılı seçenekler
-├─ SecureScoreLens-Secenekler-TR-ONIZLEME.html
-├─ docs/                              Kaynak ve kapsam defterleri
-├─ tests/                             Offline testler ve sentetik fixture'lar
-├─ .github/workflows/ci.yml            Offline CI
-├─ PUBLICATION-CHECKS.md
+│     ├─ secure_score_assessment.py
+│     ├─ secure_score_tr.json
+│     ├─ remediation_options_tr.json
+│     └─ reviewed_guidance_corrections.json
+├─ README.md
+├─ SECURITY.md
+├─ SHA256SUMS.txt
 ├─ SOURCE-PROVENANCE.json
-└─ SHA256SUMS.txt
+└─ release-notes.md
 ```
 
-Eski `src/`, `module/SecureScoreLens/` ve `launcher/` örnekleri bu paketin çalıştırma yolları değildir; motor **`Modul/assets/`**, başlatıcılar **depo kökü** altındadır.
+Motor `Modul/assets/`, başlatıcılar paket kökü altındadır. Bu dağıtımda `docs/`, `tests/`, `.github/` CI dosyaları, katkı/yükleme/kontrol kılavuzları veya hazır önizleme HTML dosyası yoktur. Çalıştırmak için Node veya geliştirme test araçları gerekmez.
 
-### Geliştirme ve tekrar çalıştırılabilir testler
+### Doğrulama ve tekrar çalıştırılabilir motor denetimi
 
-Temiz ayıklanan ZIP'in depo kökünde:
+Temiz ayıklanan ZIP'in kökünde:
+
+```powershell
+.\BASLAT.cmd -SelfTest
+```
+
+Alternatif olarak Python motorunu doğrudan çalıştırabilirsiniz:
 
 ```sh
 python Modul/assets/secure_score_assessment.py --self-test
-python -m unittest discover -s tests -v
-node --check tests/generated.js
-node --check tests/browser-check.js
 ```
 
-Motor self-test'i **51**, unit suite **31** denetim/test içerir. Paketlemenin [PUBLICATION-CHECKS.md](PUBLICATION-CHECKS.md) kaydındaki **2026-10-28 önceki çalıştırmada 82/82 geçti**; iki JavaScript sözdizimi kontrolü de geçti ve 82 toplamına eklenmedi. Bu README birleştirmesi sırasında yeni uygulama, browser, Windows veya tenant testi çalıştırıldığı iddia edilmez.
+Temiz paket üzerinde taze motor self-test sonucu **51/51**'dir. Sentetik veriden **HTML, CSV ve JSON** çıktı üretimi de doğrulanmıştır. Bu sonuçlar Windows başlatıcısının, Microsoft oturum açmanın, gerçek Graph izinlerinin veya gerçek müşteri verisinin doğrulanması değildir. Geliştirme unit-test ve JavaScript test dosyaları bu ZIP'te bulunmadığından bunlara yönelik komutlar bu belgenin çalıştırma akışına dahil edilmez.
 
-`tests/generated.js`, unit test tarafından motordan yeniden üretilir. Node yalnız JavaScript doğrulaması ve isteğe bağlı tarayıcı testi içindir. Browser testi mevcut Chromium/CDP ve yerleşik `fetch`/`WebSocket` destekli Node **22+** gerektirir; talimatlar [CONTRIBUTING.md](CONTRIBUTING.md) içindedir. Yayın kontrolündeki taze Chromium denemesi ortam engeli nedeniyle çalışmadı; tarihsel browser sonuçları bu sürümün taze başarısı olarak sunulmaz.
-
-CI yalnız bu offline motor/unit/sözdizimi kontrollerini çalıştırır; token, tenant, ağ API'si veya deployment kullanmaz. Windows 11 başlatıcı/login, PowerShell 5.1/7, gerçek Graph izin/rol davranışı, canlı portal, manuel tarayıcı etkileşimi ve baskı/PDF sayfalaması burada doğrulanmadı. Bilinen sınırlar için [PUBLICATION-CHECKS.md](PUBLICATION-CHECKS.md) ve [CHANGES.md](CHANGES.md).
+Windows 11 başlatıcı/login, PowerShell 5.1/7 çalışması ve parser kontrolü, gerçek tenant/API/rol davranışı, Windows ACL uygulaması, canlı portal, manuel tarayıcı etkileşimi ve baskı/PDF sayfalaması bu yayın kapsamında doğrulanmadı. Mock/sentetik testler bu sınırların yerine geçmez. Bilinen sınırlar ve düzeltmeler için [release-notes.md](release-notes.md), veri koruma için [SECURITY.md](SECURITY.md).
 
 ---
 
 ## Katkı
 
-Katkılar memnuniyetle karşılanır — özellikle kaynaklı içerik doğruluğu düzeltmeleri ve eksik cihaz seçeneklerinin incelenmesi. Kapsamı ve kanıt sınırlarını açıkça belirtin; gerçek tenant çıktısı, token veya müşteri verisi eklemeyin. Süreç ve test talimatları için [CONTRIBUTING.md](CONTRIBUTING.md).
+Kaynaklı içerik doğruluğu düzeltmeleri ve eksik cihaz seçeneklerinin incelenmesi değerlidir. Kapsamı ve kanıt sınırlarını açıkça belirtin; gerçek tenant çıktısı, token veya müşteri verisi eklemeyin. Bu temiz dağıtım geliştirme/katkı kılavuzu içermez.
 
 ## Yayın, bütünlük ve kaynak geçmişi
 
-- GitHub yükleme adımları: [GITHUB-YUKLEME.md](GITHUB-YUKLEME.md). Etiket **`v3.2.3`** olmalı; GitHub Release **pre-release** işaretlenmelidir. Bu README düzenlemesi GitHub'a push, upload veya yayın yapmaz.
-- Mantıksal sürüm **`3.2.3`**; PowerShell manifestinde **`ModuleVersion=3.2.3`**, PowerShellGet için alfanümerik prerelease etiketi **`preview1`** kullanılır. Galeriye otomatik yayın yoktur.
-- Onaylı **`v3.2.2-Secenekler-TR-ONIZLEME`** kaynağı esas alınmıştır; özgün v3.2.2 baseline değiştirilmedi. Kaynak SHA-256 ve korunma bilgisi [SOURCE-PROVENANCE.json](SOURCE-PROVENANCE.json), paket dosyalarının bütünlük listesi [SHA256SUMS.txt](SHA256SUMS.txt) içindedir. Checksum dosyası kendisini hash'lemez.
-- Bu belge paket dışındaki birleştirilmiş README teslimidir; mevcut ZIP, kod veya paket checksum'ları değiştirilmedi. Belgeyi depoda `README.md` yerine koyarsanız, o değişiklik için checksum listesini ve yayın kontrollerini ayrıca güncelleyin; eski checksum'un yeni belgeyi doğruladığını varsaymayın.
-- Yayın ayrıntıları: [CHANGELOG.md](CHANGELOG.md), [release-notes.md](release-notes.md), [PUBLICATION-CHECKS.md](PUBLICATION-CHECKS.md). Göreli belge bağlantıları ayıklanan depo kökünde kullanılmak üzere yazılmıştır.
+- Yayın sayfası: **[GitHub Releases](https://github.com/EmrErbulmus/SecureScoreLens/releases)**. Hedef etiket **`v3.2.3-preview.2`**, paket **`SecureScoreLens-v3.2.3-preview.2.zip`**; GitHub Release önizleme (**pre-release**) olarak işaretlenmelidir. Yayın sayfasına bağlantı verilmesi ZIP varlığının yayımlandığı veya doğrudan indirme URL'sinin doğrulandığı anlamına gelmez.
+- Mantıksal/rapor sürümü **`3.2.3-preview.2`**; PowerShell manifestinde **`ModuleVersion = '3.2.3'`**, PowerShellGet prerelease etiketi **`preview2`** kullanılır. Galeriye otomatik yayın yoktur.
+- Kaynak geçmişi ve kaynak hash bilgileri [SOURCE-PROVENANCE.json](SOURCE-PROVENANCE.json), paket dosyalarının bütünlük listesi [SHA256SUMS.txt](SHA256SUMS.txt) içindedir. Checksum listesi kendisini hash'lemez. Kaynak geçmişi, bütün içeriğin teknik doğruluğunun onayı değildir.
+- Mevcut temiz ZIP'in SHA-256 değeri: `254f0f63938ada3ab38bdde6e4956bcab8aee05b54c3e0ad82198566f51bd8a0`. Bu değer yalnız o ZIP'e aittir; yeniden paketlenmiş bir arşive uygulanmaz.
+- Bu belge ayrı bir README teslimidir; mevcut ZIP, kaynak kodu ve paket checksum'ları değiştirilmemiştir. Belgede sunulan metni depoda `README.md` yerine koyarsanız **`SHA256SUMS.txt` yeniden üretilmeli**, paket yeniden oluşturulursa ZIP hash'i de yeniden hesaplanmalıdır. Eski checksum yeni README'yi doğrulamaz.
+- Bu belge güncellemesi GitHub'a push, upload veya yayın yapmaz. Yayın ayrıntıları: [release-notes.md](release-notes.md). Göreli dosya bağlantıları temiz paketin kökünde `README.md` olarak kullanım içindir.
 
 ## Lisans
 
