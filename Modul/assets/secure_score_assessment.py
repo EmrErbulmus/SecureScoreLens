@@ -113,22 +113,37 @@ STR = {
         "sum_bench_down": ("Kurum, tüm tenant ortalamasının ({avg}) {diff} altında."),
         # Graph returns these as raw English enums; give them Turkish labels
         "fnd_exec": "Yönetici Özeti",
-        "fnd_exec_b": ("Bu rapor, {cust} Microsoft 365 ortamında Microsoft Secure Score "
-                       "çıktısında yer alan ve <b>henüz uygulanmamış {n} güvenlik önerisinin</b> "
-                       "kurumsal iyileştirme raporu formatına uyarlanmasıyla hazırlanmıştır. "
-                       "Her madde <b>Bulgu 1</b>'den <b>Bulgu {n}</b>'e kadar ayrı bir bulgu "
-                       "kartı olarak yapılandırılmış; bulgu adı, etkilenen kaynak, kategori, "
-                       "açıklama, etki, risk seviyesi ve iyileştirme değişikliği alanları "
-                       "korunarak rapora dahil edilmiştir."),
+        "fnd_exec_b": ("Bu rapor, {cust} Microsoft 365 ortamı için Microsoft Secure Score'un "
+                       "ölçüm tarihindeki değerlendirme kaydını temel alır. Mevcut puan, "
+                       "ölçüme dahil edilen kontrollerin bilinen azami puanları ve kalan "
+                       "iyileştirme potansiyeli birlikte ele alınarak, <b>iyileştirme gerektiren "
+                       "veya değerlendirmeye açık {n} öneri</b> ayrı bulgu kartlarında sunulur. "
+                       "Kapsam, ilgili ölçümde yer alan hizmet ve kategorilerle sınırlıdır; "
+                       "Entra, Defender ve Purview gibi hizmetlere ilişkin öneriler yalnızca "
+                       "bu kayıtta bulunduğu ölçüde değerlendirilir.</p>"
+                       '<p class="fi-p">Bulgu kartları; etkilenen hizmeti, kontrolün amacını, '
+                       "olası etkisini, Microsoft öncelik sırasını ve kalan puan katkısını "
+                       "teknik değerlendirme için bir araya getirir. Açık öneriler, planlanmış "
+                       "veya kısmen uygulanmış maddeleri de içerebilir; bu nedenle her bulgu "
+                       "ortamın mevcut durumu ve hedeflenen kapsamla birlikte ele alınmalıdır. "
+                       "Puan ve durumlar Microsoft ölçümüne dayanır; rapor yapılandırmaları "
+                       "değiştirmez ve etkin korumayı bağımsız olarak doğrulamaz."),
         "fnd_purpose": "Raporun Amacı",
-        "fnd_purpose_b": ("Secure Score önerilerini teknik kontrol listesi seviyesinden çıkarıp "
-                          "yönetilebilir, önceliklendirilebilir ve aksiyon alınabilir bir güvenlik "
-                          "iyileştirme yol haritasına dönüştürmektir. Her maddenin yapılandırma "
-                          "adımları, ortam bağımlılığı ve doğrulama bilgileri değişiklik "
-                          "planlamasını desteklemek üzere bir araya getirilmiştir. Risk seviyeleri Microsoft'un bir "
-                          "sınıflandırması değildir; bu raporun <b>etki önceliklendirme "
-                          "modeliyle</b> hesaplanır ve modelin formülü Yol Haritası bölümünde "
-                          "açıkça belirtilmiştir."),
+        "fnd_purpose_b": ("Amaç, Secure Score önerilerini uygulanabilir bir teknik değerlendirme "
+                          "ve değişiklik planına dönüştürmektir. İlgili yapılandırmanın hedef "
+                          "kullanıcı, cihaz veya hizmet kapsamı; lisans, yetki ve teknik ön "
+                          "koşulları; mevcut politikalarla etkileşimi ve uygun yönetim yöntemi "
+                          "değişiklik öncesinde belirlenmelidir. Raporda bulunan iyileştirme "
+                          "ve doğrulama bilgileri bu planlamaya girdi sağlar; uygulama "
+                          "ayrıntıları kurumun mimarisi ve kontrolün gereksinimleriyle "
+                          "tamamlanmalıdır.</p>"
+                          '<p class="fi-p">Önceliklendirme sonrasında pilot kapsam, sorumlu ekip, '
+                          "operasyonel etki, geri dönüş yaklaşımı ve beklenen doğrulama "
+                          "ölçütleri tanımlanarak değişiklik planı oluşturulmalıdır. Uygulama "
+                          "sonrasında hedef yapılandırmanın davranışı ve sonraki Microsoft "
+                          "ölçümü birlikte değerlendirilmelidir. Risk/etki öncelikleri raporun "
+                          "modelidir; Microsoft'un resmî risk sınıflandırması değildir ve "
+                          "hesaplama formülü Yol Haritası bölümünde açıklanmıştır."),
         "fnd_posture": "Genel Risk Duruşu",
         "fnd_posture_b": ("Bu belgedeki bulgular etki önceliklendirme modeline göre "
                           "sınıflandırılmıştır. Sınıflandırmalar renk kodludur ve aşağıda "
@@ -2797,9 +2812,6 @@ def build_html(res: Dict[str, Any], tenant: Dict[str, Any],
 
     <h3 class="fi-h">{e(t['fnd_purpose'])}</h3>
     <p class="fi-p">{t['fnd_purpose_b']}</p>
-    <p class="fi-scope">{e(t['fnd_scope_note'])}</p>
-    <p class="fi-scope">{e(guidance_method)}</p>
-    <p class="fi-scope">Graph profile.remediation: Microsoft kaynak metni; kaynak eşleşmeyen çeviri ve ilişkili bulgu yorumları kullanılmaz. Puan kazanımı teknik koruma doğrulaması değildir. Kapsam dışında görünen profil lisans eksikliğini kanıtlamaz. Canlı portal doğrulaması yapılmadı.</p>
 
     <h3 class="fi-h">{e(t['fnd_posture'])}</h3>
     <p class="fi-p">{e(t['fnd_posture_b'])}</p>
@@ -2917,9 +2929,8 @@ def build_html(res: Dict[str, Any], tenant: Dict[str, Any],
  --tx:#0F1D2E; --mut:#4A5D75; --dim:#5C6F87;
  --acc:{SEV_TEXT['dusuk']}; --acc2:{SEV_SOLID['dusuk']};
  --shadow:0 1px 2px rgba(15,29,46,.05),0 1px 3px rgba(15,29,46,.04);
- --f:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,
-     "Helvetica Neue",Arial,sans-serif;
- --fn:"Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,sans-serif;
+ --f:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+ --fn:var(--f);
 }}
 *{{box-sizing:border-box}}
 body{{margin:0;background:var(--bg);color:var(--tx);font:15px/1.62 var(--f);
@@ -3410,6 +3421,46 @@ footer{{padding:24px 0 0;color:var(--dim);font-size:11.5px;text-align:center}}
  tbody.grp,tr.r,tr.det,.panel,.tcard{{break-inside:avoid}}
  .pill,.tag,.minipill{{border-width:1.5px}}
  a[href^="http"]::after{{content:" (" attr(href) ")";font-size:9px;color:#555}}
+}}
+/* Native, offline typography; retain the existing layout and risk palette. */
+body{{font-size:15px;line-height:1.65}}
+button,input,select,textarea{{font-family:var(--f)}}
+h1,h2,h3,h4,h5,h6,.cust,.cv-cust,.in-h,.p-h h3,.fi-h,.b-h,
+.reviewed-options .remediation-heading,.reviewed-options h6,.guidance-subheading{{font-weight:600}}
+.summary,.sumlist li,.seclead,.pfind-t,.fi-p,.fi-scope,.rp-d,
+.in-p,.in-note,.method p,.method ul,.lg-i p,.dbox p{{font-size:15px;line-height:1.65}}
+.bulgu .b-t td{{font-size:15px;line-height:1.65}}
+.bulgu .b-t th{{font-size:13.5px;line-height:1.6;font-weight:600;letter-spacing:normal}}
+.fi-p{{font-size:16px;line-height:1.65}}
+th{{font-size:12.5px;letter-spacing:.03em;font-weight:600;line-height:1.5}}
+td{{font-size:14px;line-height:1.6}}
+.st b,.lab,.hm b,.cv-sl,.cv-meta dt,.cv-tl,.cv-kicker,.in-k,
+.tb-l,.dbox h5,.ep-s,.af>span{{font-size:12.5px;letter-spacing:.03em;font-weight:600}}
+.st small,.st-go,.sc-g,.pl,.pj-l,.pj-d,.pj-none,.pk-l,.pk-d,
+.tab .n,.p-h .n,.fs,.tag,.pill,.minipill,.cbadge,.chip b,.tsub,
+.prov,.cv-conf,.conf,.cv-meta dd.sm,.cv-note,.cv-toc li,.pnote,.fi-hint,
+.ahint,.abadge span,.ep-hint,.b-m,footer{{font-size:13px;line-height:1.6}}
+.in-c p{{font-size:14px;line-height:1.65}}
+.btn,.sel,.srch input,.af input,.ep-o,.cv-go{{font-size:14px;line-height:1.5}}
+.ep-h,.ft,.tc-t,.sc-l,.ph-when{{font-weight:600}}
+.guidance-sources,.dimp,.dnote{{font-size:13px!important;line-height:1.65}}
+code,kbd,samp,pre{{font-family:Consolas,"Cascadia Mono",monospace;font-size:13px;line-height:1.6}}
+code,kbd,samp{{white-space:pre-wrap;overflow-wrap:anywhere}}
+pre{{white-space:pre;max-width:100%;overflow-x:auto}}
+@media screen{{.tblwrap{{overflow-x:auto}}}}
+@media print{{
+ body{{font-size:11pt;line-height:1.45}}
+ .summary,.sumlist li,.seclead,.pfind-t,.fi-p,.fi-scope,.rp-d,.in-p,
+ .in-note,.method p,.method ul,.lg-i p,.dbox p,.bulgu .b-t td{{font-size:11pt;line-height:1.45}}
+ th,td,.bulgu .b-t th,.dbox dl{{font-size:10pt;line-height:1.45}}
+ .st b,.lab,.hm b,.cv-sl,.cv-meta dt,.cv-tl,.cv-kicker,.in-k,
+ .tb-l,.dbox h5,.ep-s,.af>span,.st small,.st-go,.sc-g,.pl,.pj-l,.pj-d,.pj-none,
+ .pk-l,.pk-d,.tab .n,.p-h .n,.fs,.tag,.pill,.minipill,.cbadge,.chip b,
+ .tsub,.prov,.cv-conf,.conf,.cv-meta dd.sm,.cv-note,.cv-toc li,.pnote,.fi-hint,
+ .ahint,.abadge span,.ep-hint,.b-m,footer,.in-c p{{font-size:9.5pt;line-height:1.45}}
+ .guidance-sources,.dimp,.dnote{{font-size:9.5pt!important;line-height:1.45}}
+ code,kbd,samp,pre{{font-size:9.5pt;line-height:1.45}}
+ pre{{white-space:pre-wrap;overflow:visible;overflow-wrap:anywhere}}
 }}
 </style></head><body>
 
