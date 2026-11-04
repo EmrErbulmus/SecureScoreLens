@@ -59,7 +59,7 @@ Varsayılan etkileşimli yol Microsoft'un kamuya açık first-party istemci kiml
 
 1. **[İndirme sayfası — GitHub Releases](https://github.com/EmrErbulmus/SecureScoreLens/releases)**
 
-   Paket adı: **`SecureScoreLens-v3.2.3-preview.2.zip`**. Yayın hazır olduğunda Release sayfasındaki **Assets** bölümünden bu dosyayı seçin. Bu bağlantı yayın sayfasına gider; doğrudan ZIP bağlantısı değildir. İlgili varlık henüz görünmüyorsa yayınlanmasını bekleyin.
+   Paket adı: **`SecureScoreLens-v3.2.3.zip`**. Yayın hazır olduğunda Release sayfasındaki **Assets** bölümünden bu dosyayı seçin. Bu bağlantı yayın sayfasına gider; doğrudan ZIP bağlantısı değildir. İlgili varlık henüz görünmüyorsa yayınlanmasını bekleyin.
 2. ZIP'e sağ tıklayın → **Tümünü ayıkla**. ZIP'in içinden doğrudan çalıştırmayın. GitHub kaynak deposuna yükleyecekseniz ZIP'in kendisi yerine ayıklanan kaynak dosyalarını kullanın; ZIP dosyası Release varlığı olarak ayrıca sunulabilir.
 3. Önce PowerShell terminalini ayıklanan depo kökünde açıp ağ/tenant oturumu olmadan sentetik raporu ve motor denetimlerini deneyin:
 
@@ -239,7 +239,7 @@ Bu önizleme istenen izin kapsamını genişletmez; kimlik doğrulama ve taşım
 
 İçerik kapsamı ile tenant'ta uygulama/kanıt doğrulaması ayrı tutulmalıdır. Temiz paket, içerik varlıklarını içerir; geliştirme kaynak defterleri ve test klasörleri bu dağıtıma dahil değildir.
 
-### 3.2.3-preview.2 ile öne çıkanlar
+### v3.2.3 ile öne çıkanlar
 
 - **Dört çalışma zamanı düzeltmesi:** kategori fırsat puanı ve açık işlem sayısı yalnız açık durumları kullanır; gerileme aralığı satır sayısı yerine son ölçüme bağlı gerçek UTC günleriyle hesaplanır; kapsamdan çıkan kontroller tarihsel ölçüm ve mevcut profil bilgisiyle gösterilir; trend ve durum güncellemeleri UTC tarih/saat sırasına göre işlenir.
 - **Sekiz operasyonel içerik kaydı:** `reviewed_guidance_corrections.json` içinde **6 gözden geçirilmiş düzeltme, 2 güvenli bekletme** bulunur. Citrix kilitleme süresi birimi ve IntegratedApps/onay semantiği, tenant/ilke doğrulaması olmadan kesin çözüm olarak sunulmaz. Güvenli bekletme teknik tamamlanma anlamına gelmez.
@@ -250,7 +250,7 @@ Bu önizleme istenen izin kapsamını genişletmez; kimlik doğrulama ve taşım
 
 ## Temiz paket yapısı
 
-Aşağıdaki **15 dosya**, `3.2.3-preview.2` temiz ZIP'inin köküne göredir:
+Aşağıdaki **15 dosya**, `3.2.3` temiz ZIP'inin köküne göredir:
 
 ```text
 SecureScoreLens/
@@ -301,8 +301,8 @@ Kaynaklı içerik doğruluğu düzeltmeleri ve eksik cihaz seçeneklerinin incel
 
 ## Yayın, bütünlük ve kaynak geçmişi
 
-- Yayın sayfası: **[GitHub Releases](https://github.com/EmrErbulmus/SecureScoreLens/releases)**. Hedef etiket **`v3.2.3-preview.2`**, paket **`SecureScoreLens-v3.2.3-preview.2.zip`**; GitHub Release önizleme (**pre-release**) olarak işaretlenmelidir. Yayın sayfasına bağlantı verilmesi ZIP varlığının yayımlandığı veya doğrudan indirme URL'sinin doğrulandığı anlamına gelmez.
-- Mantıksal/rapor sürümü **`3.2.3-preview.2`**; PowerShell manifestinde **`ModuleVersion = '3.2.3'`**, PowerShellGet prerelease etiketi **`preview2`** kullanılır. Galeriye otomatik yayın yoktur.
+- Yayın sayfası: **[GitHub Releases](https://github.com/EmrErbulmus/SecureScoreLens/releases)**. Hedef etiket **`v3.2.3`**, paket **`SecureScoreLens-v3.2.3.zip`**; GitHub Release önizleme (**pre-release**) olarak işaretlenmelidir. Yayın sayfasına bağlantı verilmesi ZIP varlığının yayımlandığı veya doğrudan indirme URL'sinin doğrulandığı anlamına gelmez.
+- Mantıksal/rapor sürümü **`3.2.3`**; PowerShell manifestinde **`ModuleVersion = '3.2.3'`**, PowerShellGet prerelease etiketi **`preview2`** kullanılır. Galeriye otomatik yayın yoktur.
 - Kaynak geçmişi ve kaynak hash bilgileri [SOURCE-PROVENANCE.json](SOURCE-PROVENANCE.json), paket dosyalarının bütünlük listesi [SHA256SUMS.txt](SHA256SUMS.txt) içindedir. Checksum listesi kendisini hash'lemez. Kaynak geçmişi, bütün içeriğin teknik doğruluğunun onayı değildir.
 - Mevcut temiz ZIP'in SHA-256 değeri: `254f0f63938ada3ab38bdde6e4956bcab8aee05b54c3e0ad82198566f51bd8a0`. Bu değer yalnız o ZIP'e aittir; yeniden paketlenmiş bir arşive uygulanmaz.
 - Bu belge ayrı bir README teslimidir; mevcut ZIP, kaynak kodu ve paket checksum'ları değiştirilmemiştir. Belgede sunulan metni depoda `README.md` yerine koyarsanız **`SHA256SUMS.txt` yeniden üretilmeli**, paket yeniden oluşturulursa ZIP hash'i de yeniden hesaplanmalıdır. Eski checksum yeni README'yi doğrulamaz.
