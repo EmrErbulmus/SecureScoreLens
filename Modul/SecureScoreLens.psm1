@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
     SecureScoreLens - Microsoft 365 Secure Score degerlendirme modulu.
 
@@ -150,9 +150,12 @@ function Initialize-PrivateOutputDirectory {
 
 function Write-PrivateOutputText {
     param([string] $Path, [string] $Text)
-    $file = [IO.File]::Open($Path, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write, [IO.FileShare]::None)
+    $file = $null
+    $stage = 'Encode'
     try {
+        $bytes = (New-Object Text.UTF8Encoding($false)).GetBytes($Text)
         if ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT) {
+            $stage = 'BuildAcl'
             $acl = New-Object Security.AccessControl.FileSecurity
             $acl.SetAccessRuleProtection($true, $false)
             $user = [Security.Principal.WindowsIdentity]::GetCurrent().User
@@ -161,20 +164,62 @@ function Write-PrivateOutputText {
                 $rule = New-Object Security.AccessControl.FileSystemAccessRule($identity, 'FullControl', 'Allow')
                 $acl.AddAccessRule($rule)
             }
-            if ($file.PSObject.Methods['SetAccessControl']) {
-                $file.SetAccessControl($acl)
+            # Supply the protected DACL at creation; let PowerShell unwrap typed arguments.
+            $stage = 'PreparePrivate'
+            [Security.AccessControl.FileSecurity] $fileSecurity = $acl.PSObject.BaseObject
+            $signature = [Type[]]@([string], [IO.FileMode],
+                [Security.AccessControl.FileSystemRights], [IO.FileShare], [int],
+                [IO.FileOptions], [Security.AccessControl.FileSecurity])
+            if ($null -ne [IO.FileStream].GetConstructor($signature)) {
+                $stage = 'CreatePrivateFramework'
+                $file = [IO.FileStream]::new([string]$Path, [IO.FileMode]::CreateNew,
+                    [Security.AccessControl.FileSystemRights]::Write, [IO.FileShare]::None,
+                    [int]4096, [IO.FileOptions]::None, $fileSecurity)
             } else {
-                [IO.FileSystemAclExtensions]::SetAccessControl($file, $acl)
+                $stage = 'LoadPrivateApi'
+                $extensionType = 'System.IO.FileSystemAclExtensions' -as [type]
+                if ($null -eq $extensionType) {
+                    Add-Type -AssemblyName System.IO.FileSystem.AccessControl -ErrorAction Stop
+                    $extensionType = 'System.IO.FileSystemAclExtensions' -as [type]
+                }
+                if ($null -eq $extensionType) { throw [PlatformNotSupportedException]::new() }
+                $stage = 'CreatePrivateModern'
+                $file = [IO.FileSystemAclExtensions]::Create([IO.FileInfo]::new([string]$Path),
+                    [IO.FileMode]::CreateNew, [Security.AccessControl.FileSystemRights]::Write,
+                    [IO.FileShare]::None, [int]4096, [IO.FileOptions]::None, $fileSecurity)
             }
         } else {
+            $stage = 'Create'
+            $file = [IO.File]::Open($Path, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write, [IO.FileShare]::None)
+            $stage = 'SetMode'
             & chmod 600 -- $Path
-            if ($LASTEXITCODE -ne 0) { throw 'Dosya izinleri uygulanamadi.' }
+            if ($LASTEXITCODE -ne 0) { throw [UnauthorizedAccessException]::new() }
         }
-        $bytes = (New-Object Text.UTF8Encoding($false)).GetBytes($Text)
+        $stage = 'Write'
         $file.Write($bytes, 0, $bytes.Length)
+        $stage = 'Flush'
+        $file.Flush()
+        $stage = 'Close'
+        $file.Dispose()
+        $file = $null
     }
-    catch { throw 'Ozel cikti dosyasi yazilamadi; dosya izinlerini denetleyin.' }
-    finally { $file.Dispose() }
+    catch {
+        # Never emit exception messages or unrecognized parameter names: either may contain PII.
+        $failure = $_.Exception
+        while ($null -ne $failure.InnerException) { $failure = $failure.InnerException }
+        $parameter = 'None'
+        if ($failure -is [ArgumentException] -and $failure.ParamName) {
+            $parameter = 'Other'
+            if ($failure.ParamName -cin @('path', 'mode', 'rights', 'share', 'bufferSize', 'options', 'fileSecurity', 'fileInfo')) {
+                $parameter = $failure.ParamName
+            }
+        }
+        $hresult = '0x{0:X8}' -f $failure.HResult
+        throw ('Ozel cikti dosyasi yazilamadi. Asama={0}; Tur={1}; HResult={2}; Parametre={3}.' -f $stage, $failure.GetType().Name, $hresult, $parameter)
+    }
+    finally {
+        if ($null -ne $file) { try { $file.Dispose() } catch { } }
+    }
 }
 
 function Invoke-ConsentSignIn {

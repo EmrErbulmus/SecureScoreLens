@@ -1,4 +1,4 @@
-@{
+﻿@{
     RootModule        = 'SecureScoreLens.psm1'
     ModuleVersion     = '3.2.3'
     GUID              = 'b7e4c1a2-5f38-4d6b-9c07-2a1e8d4f6b31'
@@ -25,12 +25,20 @@
 
     PrivateData = @{
         PSData = @{
-            Prerelease   = 'preview2'
+            Prerelease   = 'preview4'
             Tags         = @('Microsoft365','SecureScore','Security','Assessment','Compliance',
                              'Graph','ReadOnly','Turkish','Report')
             LicenseUri   = ''
             ProjectUri   = ''
             ReleaseNotes = @'
+3.2.3-preview.4 (PowerShellGet label: preview4)
+- Typed private-output API calls; offline Diagnose-Output.ps1 before authentication
+- Safe stage/type/HResult/allowlisted parameter diagnostics; Windows verification pending
+
+3.2.3-preview.3 (PowerShellGet label: preview3)
+- Private output: protected ACL supplied atomically at creation; safe stage/type diagnostics
+- Windows runtime verification pending; Python engine/assets unchanged
+
 3.2.3-preview.2 (PowerShellGet label: preview2)
 - GitHub source packaging, documentation and reproducible checks only; accepted runtime preserved
 
